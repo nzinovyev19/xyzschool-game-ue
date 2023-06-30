@@ -59,6 +59,9 @@ private:
 
 	void Reload();
 
+	void NextItem();
+	void PreviousItem();
+
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 private:

@@ -70,7 +70,7 @@ void UCharacterEquipmentComponent::EquipNextItem()
 	uint32 NextSlotIndex = NextItemsArraySlotIndex(CurrentSlotIndex);
 	while (CurrentSlotIndex != NextSlotIndex && !IsValid(ItemsArray[NextSlotIndex]))
 	{
-		NextSlotIndex = NextItemsArraySlotIndex(CurrentSlotIndex);
+		NextSlotIndex = NextItemsArraySlotIndex(NextSlotIndex);
 	}
 	if (CurrentSlotIndex != NextSlotIndex)
 	{
@@ -84,7 +84,7 @@ void UCharacterEquipmentComponent::EquipPreviousItem()
 	uint32 PreviousSlotIndex = PreviousItemsArraySlotIndex(CurrentSlotIndex);
 	while (CurrentSlotIndex != PreviousSlotIndex && !IsValid(ItemsArray[PreviousSlotIndex]))
 	{
-		PreviousSlotIndex = PreviousItemsArraySlotIndex(CurrentSlotIndex);
+		PreviousSlotIndex = PreviousItemsArraySlotIndex(PreviousSlotIndex);
 	}
 	if (CurrentSlotIndex != PreviousSlotIndex)
 	{
@@ -120,6 +120,8 @@ void UCharacterEquipmentComponent::CreateLoadout()
 		Item->SetOwner(CachedBaseCharacter.Get());
 		ItemsArray[(uint32)ItemPair.Key] = Item;
 	}
+
+	EquipItemInSlot(EEquipmentSlots::SideArm);
 }
 
 uint32 UCharacterEquipmentComponent::NextItemsArraySlotIndex(uint32 CurrentSlotIndex)

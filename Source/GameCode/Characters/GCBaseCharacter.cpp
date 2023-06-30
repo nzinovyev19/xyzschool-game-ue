@@ -419,12 +419,22 @@ void AGCBaseCharacter::OnStopAimingInternal()
 	}
 }
 
-void AGCBaseCharacter::Reload() const
+void AGCBaseCharacter::Reload()
 {
 	if (IsValid(CharacterEquipmentComponent->GetCurrentRangeWeaponItem()))
 	{
 		CharacterEquipmentComponent->ReloadCurrentWeapon();
 	}
+}
+
+void AGCBaseCharacter::NextItem()
+{
+	CharacterEquipmentComponent->EquipNextItem();
+}
+
+void AGCBaseCharacter::PreviousItem()
+{
+	CharacterEquipmentComponent->EquipPreviousItem();
 }
 
 void AGCBaseCharacter::Tick(float DeltaTime)
