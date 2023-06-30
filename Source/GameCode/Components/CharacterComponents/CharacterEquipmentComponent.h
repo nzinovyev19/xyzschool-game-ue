@@ -7,6 +7,7 @@
 #include "GameCode/GameCodeTypes.h"
 #include "CharacterEquipmentComponent.generated.h"
 
+typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
 typedef TArray<int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmunitionArray;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCurrentWeaponAmmoChanged, int32, int32);
@@ -26,19 +27,26 @@ public:
 
 	void ReloadCurrentWeapon();
 
+	void EquipItemInSlot(EEquipmentSlots Slot);
+	void EquipNextItem();
+	void EquipPreviousItem();
+
 protected:
 	virtual void BeginPlay() override;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
-	TSubclassOf<ARangeWeaponItem> SideArmClass;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
 	TMap<EAmunitionType, int32> MaxAmunitionAmount;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
+	TMap<EEquipmentSlots, TSubclassOf<class AEquipableItem>> ItemsLoadout;
+
 private:
 	TAmunitionArray AmunitionArray;
+	TItemsArray ItemsArray;
 	
 	void CreateLoadout();
+
+	uint32 NextItemsArraySlotIndex(uint32 CurrentSlotIndex);
+	uint32 PreviousItemsArraySlotIndex(uint32 CurrentSlotIndex);
 
 	int32 GetAvailableAmunitionForCurrentWeapon();
 
@@ -50,6 +58,13 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Transient, Category = "Character | Attributes")
 	ARangeWeaponItem* CurrentEquippedWeapon;
+	
+	UPROPERTY(EditDefaultsOnly, Transient, Category = "Character | Attributes")
+	AEquipableItem* CurrentEquippedItem;
+
+	FDelegateHandle OnCurrentWeaponAmmoChangedHandle;
+	FDelegateHandle OnCurrentWeaponReloadHandle;
+	EEquipmentSlots CurrentEquippedSlot;
 	
 	TWeakObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 }; 

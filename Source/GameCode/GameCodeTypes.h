@@ -37,3 +37,12 @@ enum class EAmunitionType: uint8
 	Rifle,
 	MAX UMETA(Hidden)
 };
+
+UENUM(BlueprintType)
+enum class EEquipmentSlots : uint8
+{
+	None,
+	SideArm,
+	PrimaryWeapon,
+	MAX UMETA(Hidden)
+};
