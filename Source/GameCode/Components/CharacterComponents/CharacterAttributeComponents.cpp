@@ -20,6 +20,18 @@ float UCharacterAttributeComponents::GetHealthPercent() const
 	return Health / MaxHealth;
 }
 
+float UCharacterAttributeComponents::GetStaminaPercent() const
+{
+
+	return Stamina / MaxStamina;
+}
+
+float UCharacterAttributeComponents::GetOxygenPercent() const
+{
+
+	return Oxygen / MaxOxygen;
+}
+
 void UCharacterAttributeComponents::BeginPlay()
 {
 	Super::BeginPlay();

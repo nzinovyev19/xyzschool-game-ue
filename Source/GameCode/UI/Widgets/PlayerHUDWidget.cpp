@@ -4,7 +4,6 @@
 #include "PlayerHUDWidget.h"
 
 #include "Blueprint/WidgetTree.h"
-#include "GameCode/Characters/GCBaseCharacter.h"
 
 UReticleWidget* UPlayerHUDWidget::GetReticleWidget()
 {
@@ -16,15 +15,7 @@ UAmmoWidget* UPlayerHUDWidget::GetAmmoWidget()
 	return WidgetTree->FindWidget<UAmmoWidget>(AmmoWidgetName);
 }
 
-float UPlayerHUDWidget::GetHealthPercent() const
+UCharacterAttributesWidget* UPlayerHUDWidget::GetCharacterAttributesWidget()
 {
-	float Result = 1;
-	APawn* Pawn = GetOwningPlayerPawn();
-	AGCBaseCharacter* Character = Cast<AGCBaseCharacter>(Pawn);
-	if (IsValid(Character))
-	{
-		const UCharacterAttributeComponents* CharacterAttributes = Character->GetCharacterAttributesComponent();
-		Result = CharacterAttributes->GetHealthPercent();
-	}
-	return Result;
+	return WidgetTree->FindWidget<UCharacterAttributesWidget>(CharacterAttributesWidgetName);
 }

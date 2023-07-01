@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "ReticleWidget.h"
 #include "AmmoWidget.h"
+#include "CharacterAttributesWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUDWidget.generated.h"
 
@@ -21,13 +22,15 @@ public:
 
 	UAmmoWidget* GetAmmoWidget();
 
-protected:
-	UFUNCTION(BlueprintCallable)
-	float GetHealthPercent() const;
+	UCharacterAttributesWidget* GetCharacterAttributesWidget();
 
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName ReticleWidgetName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName AmmoWidgetName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
+	FName CharacterAttributesWidgetName;
 };
