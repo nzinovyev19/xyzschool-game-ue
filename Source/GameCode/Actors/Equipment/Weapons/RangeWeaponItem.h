@@ -18,7 +18,7 @@ enum class EWeaponFireMode : uint8
 
 class UAnimMontage;
 UCLASS(Blueprintable)
-class GAMECODE_API ARangeWeaponItem : public AEquipableItem
+class GAMECODE_API ARangeWeaponItem : public  AEquipableItem
 {
 	GENERATED_BODY()
 
@@ -120,6 +120,7 @@ private:
 	
 	float GetShotTimerInterval() const;
 	float PlayAnimMontage(UAnimMontage* AnimMontage);
+	void StopAnimMontage(UAnimMontage* AnimMontage, float BlendOutTime = 0.0f);
 
 	FTimerHandle ShotTimer;
 	FTimerHandle ReloadTimer;

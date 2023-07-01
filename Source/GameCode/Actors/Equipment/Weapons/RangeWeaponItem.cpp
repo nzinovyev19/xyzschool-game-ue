@@ -121,6 +121,14 @@ void ARangeWeaponItem::EndReload(bool bIsSuccess)
 		return;
 	}
 
+	if (!bIsSuccess)
+	{
+		checkf(GetOwner()->IsA<AGCBaseCharacter>(), TEXT("ARangeWeaponItem::EndReload only character can be an owner of range weapon"))
+		AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
+		CharacterOwner->StopAnimMontage(CharacterReloadMontage);
+		StopAnimMontage(WeaponReloadMontage);
+	}
+
 	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
 	
 	bIsRealoding = false;
@@ -210,6 +218,15 @@ float ARangeWeaponItem::PlayAnimMontage(UAnimMontage* AnimMontage)
 		Result = WeaponAnimInstance->Montage_Play(AnimMontage);
 	}
 	return Result;
+}
+
+void ARangeWeaponItem::StopAnimMontage(UAnimMontage* AnimMontage, float BlendOutTime)
+{
+	UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
+	if (IsValid(WeaponAnimInstance))
+	{
+		WeaponAnimInstance->Montage_Stop(BlendOutTime, AnimMontage);
+	}
 }
 
 

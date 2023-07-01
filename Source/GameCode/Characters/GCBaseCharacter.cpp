@@ -336,6 +336,10 @@ void AGCBaseCharacter::StopSprint()
 
 void AGCBaseCharacter::StartFire()
 {
+	if (CharacterEquipmentComponent->IsEquipping())
+	{
+		return;
+	}
 	ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeaponItem();
 	if (IsValid(CurrentRangeWeapon))
 	{

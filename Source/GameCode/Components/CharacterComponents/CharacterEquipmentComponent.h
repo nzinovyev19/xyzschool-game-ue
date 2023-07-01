@@ -26,10 +26,13 @@ public:
 	FOnCurrentWeaponAmmoChanged OnCurrentWeaponAmmoChangedEvent;
 
 	void ReloadCurrentWeapon();
+	void UnEquipCurrentItem();
+	void AttachCurrentItemToEquippedSocket();
 
 	void EquipItemInSlot(EEquipmentSlots Slot);
 	void EquipNextItem();
 	void EquipPreviousItem();
+	bool IsEquipping() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -50,6 +53,8 @@ private:
 
 	int32 GetAvailableAmunitionForCurrentWeapon();
 
+	bool bIsEquipping = false;
+
 	UFUNCTION()
 	void OnWeaponReloadComplete();
 
@@ -65,6 +70,9 @@ private:
 	FDelegateHandle OnCurrentWeaponAmmoChangedHandle;
 	FDelegateHandle OnCurrentWeaponReloadHandle;
 	EEquipmentSlots CurrentEquippedSlot;
+	void EquipAnimationFinished();
+
+	FTimerHandle EquipTimer;
 	
 	TWeakObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 }; 

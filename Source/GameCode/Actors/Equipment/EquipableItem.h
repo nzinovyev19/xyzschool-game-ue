@@ -15,12 +15,17 @@ class GAMECODE_API AEquipableItem : public AActor
 public:
 	EEquippableItemType GetItemType();
 
+	UAnimMontage* GetCharacterEquipAnimMontage() const;
+
 	FName GetUnEquippedSocketName() const;
 	FName GetEquippedSocketName() const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipable item")
 	EEquippableItemType ItemType = EEquippableItemType::None;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipable item")
+	UAnimMontage* CharacterEquipAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipable item")
 	FName UnEquippedSocketName = NAME_None;
