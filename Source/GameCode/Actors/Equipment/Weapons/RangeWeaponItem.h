@@ -31,7 +31,7 @@ public:
 	void StopAiming();
 
 	void StartReload();
-	void EndReload(bool bIsSuccess);
+	void EndReload(bool bIsSuccess, bool bJumpToEnd);
 
 	int32 GetAmmo() const;
 	int32 GetMaxAmmo() const;

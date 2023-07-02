@@ -35,7 +35,7 @@ void ARangeWeaponItem::MakeShot()
 		return;
 	}
 
-	EndReload(false);
+	EndReload(false, false);
 	
 	CharacterOwner->PlayAnimMontage(CharacterFireMontage);
 	PlayAnimMontage(WeaponFireMontage);
@@ -92,16 +92,16 @@ void ARangeWeaponItem::StartReload()
 	{
 		float MontageDuration = CharacterOwner->PlayAnimMontage(CharacterReloadMontage);
 		PlayAnimMontage(WeaponReloadMontage);
-		GetWorld()->GetTimerManager().SetTimer(ReloadTimer, [this]() { EndReload(true); }, MontageDuration, false);
+		GetWorld()->GetTimerManager().SetTimer(ReloadTimer, [this]() { EndReload(true, false); }, MontageDuration, false);
 	}
 	else
 	{
-		EndReload(true);
+		EndReload(true, false);
 	}
 	
 }
 
-void ARangeWeaponItem::EndReload(bool bIsSuccess)
+void ARangeWeaponItem::EndReload(bool bIsSuccess, bool bJumpToEnd)
 {
 	if (!bIsRealoding)
 	{
@@ -114,6 +114,22 @@ void ARangeWeaponItem::EndReload(bool bIsSuccess)
 		AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
 		CharacterOwner->StopAnimMontage(CharacterReloadMontage);
 		StopAnimMontage(WeaponReloadMontage);
+	}
+
+	if (bJumpToEnd)
+	{
+		AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
+		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
+		if (IsValid(CharacterAnimInstance))
+		{
+			CharacterAnimInstance->Montage_JumpToSection(SectionMontageReloadEnd, CharacterReloadMontage);
+		}
+
+		UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
+		if (IsValid(WeaponAnimInstance))
+		{
+			WeaponAnimInstance->Montage_JumpToSection(SectionMontageReloadEnd, WeaponReloadMontage);
+		}
 	}
 
 	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);

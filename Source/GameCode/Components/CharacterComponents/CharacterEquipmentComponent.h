@@ -26,6 +26,7 @@ public:
 	FOnCurrentWeaponAmmoChanged OnCurrentWeaponAmmoChangedEvent;
 
 	void ReloadCurrentWeapon();
+	void ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo, bool bCheckIsFull);
 	void UnEquipCurrentItem();
 	void AttachCurrentItemToEquippedSocket();
 
