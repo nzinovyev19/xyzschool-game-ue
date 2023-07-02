@@ -115,8 +115,6 @@ private:
 	
 	bool bIsAiming;
 	void MakeShot();
-
-	FVector GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const;
 	
 	float GetShotTimerInterval() const;
 	float PlayAnimMontage(UAnimMontage* AnimMontage);
