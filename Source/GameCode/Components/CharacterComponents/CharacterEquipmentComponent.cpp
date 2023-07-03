@@ -46,7 +46,7 @@ void UCharacterEquipmentComponent::ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo,
 		bool bIsFullyReloaded = CurrentEquippedWeapon->GetAmmo() == CurrentEquippedWeapon->GetMaxAmmo();
 		if (!AvailableAmunition || bIsFullyReloaded)
 		{
-			CurrentEquippedWeapon->EndReload(true, true);
+			CurrentEquippedWeapon->EndReload(true);
 		}
 	}
 }
@@ -63,7 +63,7 @@ void UCharacterEquipmentComponent::UnEquipCurrentItem()
 	if (IsValid(CurrentEquippedWeapon))
 	{
 		CurrentEquippedWeapon->StopFire();
-		CurrentEquippedWeapon->EndReload(false, false);
+		CurrentEquippedWeapon->EndReload(false);
 		CurrentEquippedWeapon->OnAmmoChanged.Remove(OnCurrentWeaponAmmoChangedHandle);
 		CurrentEquippedWeapon->OnReloadComplete.Remove(OnCurrentWeaponReloadHandle);
 	}

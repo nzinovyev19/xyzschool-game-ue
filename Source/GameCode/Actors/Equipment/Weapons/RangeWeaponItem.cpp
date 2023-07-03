@@ -35,7 +35,7 @@ void ARangeWeaponItem::MakeShot()
 		return;
 	}
 
-	EndReload(false, false);
+	EndReload(false);
 	
 	CharacterOwner->PlayAnimMontage(CharacterFireMontage);
 	PlayAnimMontage(WeaponFireMontage);
@@ -92,16 +92,24 @@ void ARangeWeaponItem::StartReload()
 	{
 		float MontageDuration = CharacterOwner->PlayAnimMontage(CharacterReloadMontage);
 		PlayAnimMontage(WeaponReloadMontage);
-		GetWorld()->GetTimerManager().SetTimer(ReloadTimer, [this]() { EndReload(true, false); }, MontageDuration, false);
+		if (ReloadType == EReloadType::FullClip)
+		{
+			GetWorld()->GetTimerManager().SetTimer(
+				ReloadTimer,
+				[this]() { EndReload(true); },
+				MontageDuration,
+				false
+			);
+		}
 	}
 	else
 	{
-		EndReload(true, false);
+		EndReload(true);
 	}
 	
 }
 
-void ARangeWeaponItem::EndReload(bool bIsSuccess, bool bJumpToEnd)
+void ARangeWeaponItem::EndReload(bool bIsSuccess)
 {
 	if (!bIsRealoding)
 	{
@@ -116,7 +124,7 @@ void ARangeWeaponItem::EndReload(bool bIsSuccess, bool bJumpToEnd)
 		StopAnimMontage(WeaponReloadMontage);
 	}
 
-	if (bJumpToEnd)
+	if (ReloadType == EReloadType::ByBullet)
 	{
 		AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
 		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
