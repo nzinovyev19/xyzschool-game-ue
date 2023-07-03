@@ -55,21 +55,44 @@ void ARangeWeaponItem::MakeShot()
 
 	SetAmmo(Ammo - 1);
 	WeaponBarell->Shot(PlayerViewPoint, ViewDirection, Controller, GetCurrentBulletSpreadAngle());
+
+	GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeaponItem::OnShotTimerElapsed, GetShotTimerInterval(), false);
+}
+
+void ARangeWeaponItem::OnShotTimerElapsed()
+{
+	if (!bIsFiring)
+	{
+		return;
+	}
+
+	switch (WeaponFireMode)
+	{
+		case EWeaponFireMode::Single:
+		{
+			StopFire();
+			break;
+		}
+		case EWeaponFireMode::FullAuto:
+		{
+			MakeShot();
+		}
+	}
 }
 
 void ARangeWeaponItem::StartFire()
 {
-	MakeShot();
-	if (WeaponFireMode == EWeaponFireMode::FullAuto)
+	if (GetWorld()->GetTimerManager().IsTimerActive(ShotTimer))
 	{
-		GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
-		GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeaponItem::MakeShot, GetShotTimerInterval(), true);
+		return;
 	}
+	bIsFiring = true;
+	MakeShot();
 }
 
 void ARangeWeaponItem::StopFire()
 {
-	GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
+	bIsFiring = false;
 }
 
 void ARangeWeaponItem::StartAiming()

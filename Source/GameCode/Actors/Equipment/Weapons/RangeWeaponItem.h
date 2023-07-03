@@ -122,11 +122,14 @@ protected:
 private:
 	int32 Ammo = 0;
 	bool bIsRealoding = false;
+	bool bIsFiring = false;
 
 	float GetCurrentBulletSpreadAngle() const;
 	
 	bool bIsAiming;
 	void MakeShot();
+
+	void OnShotTimerElapsed();
 	
 	float GetShotTimerInterval() const;
 	float PlayAnimMontage(UAnimMontage* AnimMontage);
