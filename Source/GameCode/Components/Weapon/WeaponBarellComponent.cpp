@@ -38,7 +38,11 @@ void UWeaponBarellComponent::Shot(FVector ShotStart, FVector ShotDirection, ACon
 			AActor* HitActor = ShotResult.GetActor();
 			if (IsValid(HitActor))
 			{
-				HitActor->TakeDamage(DamageAmount, FDamageEvent{}, Controller, GetOwner());
+				FPointDamageEvent DamageEvent;
+				DamageEvent.HitInfo = ShotResult;
+				DamageEvent.ShotDirection = ShotDirection;
+				DamageEvent.DamageTypeClass = DamageTypeClass;
+				HitActor->TakeDamage(DamageAmount, DamageEvent, Controller, GetOwner());
 			}
 
 			UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, ShotResult.ImpactPoint, ShotResult.ImpactNormal.ToOrientationRotator());
