@@ -19,7 +19,7 @@ Implement third person shooter with realizing in parallel the such mechanics as:
   - [x] Pistol
   - [x] Rifle
   - [x] Amunition interface (switching)
-  - [ ] Shotgun
+  - [x] Shotgun
   - [ ] Explosions and grenades
   - [ ] Sniped rifle
   - [ ] Knife
