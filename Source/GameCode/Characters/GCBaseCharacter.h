@@ -94,6 +94,7 @@ public:
 
 	void NextItem();
 	void PreviousItem();
+	void EquipPrimaryItem();
 
 	virtual void Tick(float DeltaTime) override;
 

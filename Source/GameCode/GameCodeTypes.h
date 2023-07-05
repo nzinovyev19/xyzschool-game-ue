@@ -28,7 +28,8 @@ enum class EEquippableItemType: uint8
 {
 	None,
 	Pistol,
-	Rifle
+	Rifle,
+	Throwable	
 };
 
 UENUM(BlueprintType)
@@ -48,5 +49,6 @@ enum class EEquipmentSlots : uint8
 	SideArm,
 	PrimaryWeapon,
 	SecondaryWeapon,
+	PrimaryItemSlot,
 	MAX UMETA(Hidden)
 };

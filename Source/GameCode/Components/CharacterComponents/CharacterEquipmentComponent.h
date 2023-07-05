@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameCode/GameCodeTypes.h"
+#include "GameCode/Actors/Equipment/Throwables/ThrowableItem.h"
 #include "CharacterEquipmentComponent.generated.h"
 
 typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
@@ -35,6 +36,8 @@ public:
 	void EquipPreviousItem();
 	bool IsEquipping() const;
 
+	void LaunchCurrentThrowableItem();
+
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
@@ -42,6 +45,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
 	TMap<EEquipmentSlots, TSubclassOf<class AEquipableItem>> ItemsLoadout;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
+	TSet<EEquipmentSlots> IgnoredSlotsWhileSwitching;
 
 private:
 	TAmunitionArray AmunitionArray;
@@ -68,8 +74,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Transient, Category = "Character | Attributes")
 	AEquipableItem* CurrentEquippedItem;
 
+	UPROPERTY(EditDefaultsOnly, Transient, Category = "Character | Attributes")
+	AThrowableItem* CurrentThrowableItem;
+
 	FDelegateHandle OnCurrentWeaponAmmoChangedHandle;
 	FDelegateHandle OnCurrentWeaponReloadHandle;
+	EEquipmentSlots PreviousEquippedSlot;
 	EEquipmentSlots CurrentEquippedSlot;
 	void EquipAnimationFinished();
 

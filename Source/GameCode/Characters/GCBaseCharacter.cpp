@@ -441,6 +441,11 @@ void AGCBaseCharacter::PreviousItem()
 	CharacterEquipmentComponent->EquipPreviousItem();
 }
 
+void AGCBaseCharacter::EquipPrimaryItem()
+{
+	CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PrimaryItemSlot);
+}
+
 void AGCBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

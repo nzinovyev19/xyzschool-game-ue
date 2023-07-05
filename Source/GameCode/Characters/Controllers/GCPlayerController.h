@@ -61,6 +61,7 @@ private:
 
 	void NextItem();
 	void PreviousItem();
+	void EquipPrimaryItem();
 
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
