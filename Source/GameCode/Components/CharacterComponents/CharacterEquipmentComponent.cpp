@@ -60,6 +60,7 @@ void UCharacterEquipmentComponent::UnEquipCurrentItem()
 			CachedBaseCharacter->GetMesh(),
 			FAttachmentTransformRules::KeepRelativeTransform, CurrentEquippedItem->GetUnEquippedSocketName()
 		);
+		CurrentEquippedItem->UnEquip();
 	}
 	if (IsValid(CurrentEquippedWeapon))
 	{
@@ -75,20 +76,18 @@ void UCharacterEquipmentComponent::UnEquipCurrentItem()
 
 void UCharacterEquipmentComponent::AttachCurrentItemToEquippedSocket()
 {
-	CurrentEquippedItem->AttachToComponent(
-		CachedBaseCharacter->GetMesh(),
-		FAttachmentTransformRules::KeepRelativeTransform,
-		CurrentEquippedItem->GetEquippedSocketName()
-	);
+	if (IsValid(CurrentEquippedItem))
+	{
+		CurrentEquippedItem->AttachToComponent(
+			CachedBaseCharacter->GetMesh(),
+			FAttachmentTransformRules::KeepRelativeTransform,
+			CurrentEquippedItem->GetEquippedSocketName()
+		);
+	}
 }
 
 void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 {
-	if (!IsValid(ItemsArray[(uint32)Slot]))
-	{
-		return;
-	}
-	
 	if (bIsEquipping)
 	{
 		return;
@@ -112,6 +111,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 			AttachCurrentItemToEquippedSocket();	
 		}
 		CurrentEquippedSlot = Slot;
+		CurrentEquippedItem->Equip();
 	}
 
 	if (IsValid(CurrentEquippedWeapon))
@@ -200,6 +200,7 @@ void UCharacterEquipmentComponent::CreateLoadout()
 		AEquipableItem* Item = GetWorld()->SpawnActor<AEquipableItem>(ItemPair.Value);
 		Item->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, Item->GetUnEquippedSocketName());
 		Item->SetOwner(CachedBaseCharacter.Get());
+		Item->UnEquip();
 		ItemsArray[(uint32)ItemPair.Key] = Item;
 	}
 

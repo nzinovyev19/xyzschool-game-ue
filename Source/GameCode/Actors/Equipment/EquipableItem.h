@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "EquipableItem.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquipmentStateChanged, bool, bIsEquipped);
+
 UCLASS()
 class GAMECODE_API AEquipableItem : public AActor
 {
@@ -20,7 +22,13 @@ public:
 	FName GetUnEquippedSocketName() const;
 	FName GetEquippedSocketName() const;
 
+	virtual void Equip();
+	virtual void UnEquip();
+
 protected:
+	UPROPERTY(BlueprintAssignable)
+	FOnEquipmentStateChanged OnEquipmentStateChanged;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipable item")
 	EEquippableItemType ItemType = EEquippableItemType::None;
 
