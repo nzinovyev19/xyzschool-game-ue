@@ -24,4 +24,5 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	virtual void OnProjectileLaunched();
 };
