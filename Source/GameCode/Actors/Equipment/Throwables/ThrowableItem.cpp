@@ -10,7 +10,7 @@ void AThrowableItem::Throw()
 {
 	checkf(GetOwner()->IsA<AGCBaseCharacter>(), TEXT("AThrowableItem::Throw only character can be an owner of a throwable weapon"))
 	AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
-
+	
 	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
 	if (!IsValid(Controller))
 	{

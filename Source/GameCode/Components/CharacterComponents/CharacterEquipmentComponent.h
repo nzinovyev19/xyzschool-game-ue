@@ -11,7 +11,7 @@
 typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
 typedef TArray<int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmunitionArray;
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCurrentWeaponAmmoChanged, int32, int32);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnCurrentWeaponAmmoChanged, int32, int32, int32);
 
 class ARangeWeaponItem;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -59,6 +59,7 @@ private:
 	uint32 PreviousItemsArraySlotIndex(uint32 CurrentSlotIndex);
 
 	int32 GetAvailableAmunitionForCurrentWeapon();
+	int32 GetAvailableAmunitionForGrenade();
 
 	bool bIsEquipping = false;
 

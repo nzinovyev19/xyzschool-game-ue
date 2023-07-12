@@ -58,7 +58,7 @@ void UCharacterEquipmentComponent::ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo,
 	}
 }
 
-	void UCharacterEquipmentComponent::UnEquipCurrentItem()
+void UCharacterEquipmentComponent::UnEquipCurrentItem()
 {
 	if (IsValid(CurrentEquippedItem))
 	{
@@ -126,6 +126,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		OnCurrentWeaponReloadHandle = CurrentEquippedWeapon->OnReloadComplete.AddUFunction(this, FName("OnWeaponReloadComplete"));
 		OnCurrentWeaponAmmoChanged(CurrentEquippedWeapon->GetAmmo());
 	}
+	
 	CurrentEquippedSlot = Slot;
 }
 
@@ -174,7 +175,13 @@ void UCharacterEquipmentComponent::LaunchCurrentThrowableItem()
 {
 	if (IsValid(CurrentThrowableItem))
 	{
-		CurrentThrowableItem->Throw();
+		int32 Amount = GetAvailableAmunitionForGrenade();
+		if (Amount != 0)
+		{
+			CurrentThrowableItem->Throw();
+			AmunitionArray[(uint32)EAmunitionType::FragGrenades] = Amount - 1;
+		}
+
 
 		bIsEquipping = false;
 		EquipItemInSlot(PreviousEquippedSlot);
@@ -244,6 +251,11 @@ int32 UCharacterEquipmentComponent::GetAvailableAmunitionForCurrentWeapon()
 	return AmunitionArray[(uint32)GetCurrentRangeWeaponItem()->GetAmmoType()];
 }
 
+int32 UCharacterEquipmentComponent::GetAvailableAmunitionForGrenade()
+{
+	return AmunitionArray[(uint32)EAmunitionType::FragGrenades];
+}
+
 void UCharacterEquipmentComponent::OnWeaponReloadComplete()
 {
 	ReloadAmmoInCurrentWeapon(0, false);
@@ -253,7 +265,7 @@ void UCharacterEquipmentComponent::OnCurrentWeaponAmmoChanged(int32 Ammo)
 {
 	if (OnCurrentWeaponAmmoChangedEvent.IsBound())
 	{
-		OnCurrentWeaponAmmoChangedEvent.Broadcast(Ammo, GetAvailableAmunitionForCurrentWeapon());
+		OnCurrentWeaponAmmoChangedEvent.Broadcast(Ammo, GetAvailableAmunitionForCurrentWeapon(), GetAvailableAmunitionForGrenade() );
 	}
 }
 
