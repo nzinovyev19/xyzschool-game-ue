@@ -443,7 +443,7 @@ void AGCBaseCharacter::PreviousItem()
 
 void AGCBaseCharacter::EquipPrimaryItem()
 {
-	CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PrimaryItemSlot);
+		CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PrimaryItemSlot);
 }
 
 void AGCBaseCharacter::Tick(float DeltaTime)

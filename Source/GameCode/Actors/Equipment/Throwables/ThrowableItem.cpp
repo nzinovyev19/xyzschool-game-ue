@@ -40,3 +40,8 @@ void AThrowableItem::Throw()
 		Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
 	}
 }
+
+EAmunitionType AThrowableItem::GetAmmoType() const
+{
+	return AmmoType;
+}

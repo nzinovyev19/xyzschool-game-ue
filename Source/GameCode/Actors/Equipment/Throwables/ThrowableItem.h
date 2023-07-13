@@ -13,6 +13,7 @@ class GAMECODE_API AThrowableItem : public AEquipableItem
 
 public:
 	void Throw();
+	EAmunitionType GetAmmoType() const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throwables")
@@ -20,4 +21,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Throwables", meta = (UIMin = -90.0f, UIMax = 90.0f, ClampMin = -90.0f, ClampMax = 90.0f))
 	float ThrowAngle = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Ammo")
+	EAmunitionType AmmoType;
 };

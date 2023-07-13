@@ -9,7 +9,7 @@
 #include "CharacterEquipmentComponent.generated.h"
 
 typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
-typedef TArray<int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmunitionArray;
+typedef TArray<int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmmunitionArray;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCurrentWeaponAmmoChanged, int32, int32);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentThrowableCountChanged, int32);
@@ -53,7 +53,7 @@ protected:
 	TSet<EEquipmentSlots> IgnoredSlotsWhileSwitching;
 
 private:
-	TAmunitionArray AmunitionArray;
+	TAmmunitionArray AmmunitionArray;
 	TItemsArray ItemsArray;
 	
 	void CreateLoadout();

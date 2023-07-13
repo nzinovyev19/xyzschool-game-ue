@@ -44,12 +44,12 @@ void UCharacterEquipmentComponent::ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo,
 		ReloadedAmmo = FMath::Min(ReloadedAmmo, NumberOfAmmo);
 	}
 
-	AmunitionArray[(uint32)CurrentEquippedWeapon->GetAmmoType()] -= ReloadedAmmo;
+	AmmunitionArray[(uint32)CurrentEquippedWeapon->GetAmmoType()] -= ReloadedAmmo;
 	CurrentEquippedWeapon->SetAmmo(ReloadedAmmo + CurrentAmmo);
 
 	if (bCheckIsFull)
 	{
-		AvailableAmunition = AmunitionArray[(uint32)CurrentEquippedWeapon->GetAmmoType()];
+		AvailableAmunition = AmmunitionArray[(uint32)CurrentEquippedWeapon->GetAmmoType()];
 		bool bIsFullyReloaded = CurrentEquippedWeapon->GetAmmo() == CurrentEquippedWeapon->GetMaxAmmo();
 		if (!AvailableAmunition || bIsFullyReloaded)
 		{
@@ -95,7 +95,8 @@ void UCharacterEquipmentComponent::AttachCurrentItemToEquippedSocket()
 
 bool UCharacterEquipmentComponent::IsReadyToEquip(AEquipableItem* Item)
 {
-	if (AmunitionArray[(uint32)EAmunitionType::FragGrenades] == 0)
+	CurrentThrowableItem = Cast<AThrowableItem>(Item);
+	if (IsValid(CurrentThrowableItem) && AmmunitionArray[(uint32)CurrentThrowableItem->GetAmmoType()] == 0)
 	{
 		return false;
 	}
@@ -127,7 +128,6 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		{
 			AttachCurrentItemToEquippedSocket();	
 		}
-		CurrentEquippedSlot = Slot;
 		CurrentEquippedItem->Equip();
 	}
 
@@ -137,6 +137,8 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		OnCurrentWeaponReloadHandle = CurrentEquippedWeapon->OnReloadComplete.AddUFunction(this, FName("OnWeaponReloadComplete"));
 		OnCurrentWeaponAmmoChanged(CurrentEquippedWeapon->GetAmmo());
 	}
+
+	CurrentEquippedSlot = Slot;
 }
 
 void UCharacterEquipmentComponent::EquipNextItem()
@@ -186,7 +188,7 @@ void UCharacterEquipmentComponent::LaunchCurrentThrowableItem()
 	{
 		CurrentThrowableItem->Throw();
 
-		AmunitionArray[(uint32)EAmunitionType::FragGrenades] = GetAvailableAmunitionForGrenade() - 1;
+		AmmunitionArray[(uint32)EAmunitionType::FragGrenades] = GetAvailableAmunitionForGrenade() - 1;
 		OnCurrentThrowableCountChanged();
 
 		bIsEquipping = false;
@@ -207,10 +209,10 @@ void UCharacterEquipmentComponent::BeginPlay()
 
 void UCharacterEquipmentComponent::CreateLoadout()
 {
-	AmunitionArray.AddZeroed((uint32)EAmunitionType::MAX);
+	AmmunitionArray.AddZeroed((uint32)EAmunitionType::MAX);
 	for (const TPair<EAmunitionType, int32>& AmmoPair : MaxAmunitionAmount)
 	{
-		AmunitionArray[(uint32)AmmoPair.Key] = FMath::Max(AmmoPair.Value, 0);
+		AmmunitionArray[(uint32)AmmoPair.Key] = FMath::Max(AmmoPair.Value, 0);
 	}
 
 	ItemsArray.AddZeroed((uint32)EEquipmentSlots::MAX);
@@ -254,12 +256,12 @@ uint32 UCharacterEquipmentComponent::PreviousItemsArraySlotIndex(uint32 CurrentS
 
 int32 UCharacterEquipmentComponent::GetAvailableAmunitionForCurrentWeapon()
 {
-	check(GetCurrentRangeWeaponItem());	return AmunitionArray[(uint32)GetCurrentRangeWeaponItem()->GetAmmoType()];
+	check(GetCurrentRangeWeaponItem());	return AmmunitionArray[(uint32)GetCurrentRangeWeaponItem()->GetAmmoType()];
 }
 
 int32 UCharacterEquipmentComponent::GetAvailableAmunitionForGrenade()
 {
-	return AmunitionArray[(uint32)EAmunitionType::FragGrenades];
+	return AmmunitionArray[(uint32)EAmunitionType::FragGrenades];
 }
 
 void UCharacterEquipmentComponent::OnWeaponReloadComplete()
