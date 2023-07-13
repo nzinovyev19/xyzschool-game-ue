@@ -288,6 +288,7 @@ void AGCPlayerController::CreateAndInitializeWidgets()
 		{
 			UCharacterEquipmentComponent* CharacterEquipmentComponent = CachedBaseCharacter->GetCharacterEquipmentComponent_Mutable();
 			CharacterEquipmentComponent->OnCurrentWeaponAmmoChangedEvent.AddUFunction(AmmoWidget, FName("UpdateAmmoCount"));
+			CharacterEquipmentComponent->OnCurrentThrowableCountChangedEvent.AddUFunction(AmmoWidget, FName("UpdateGrenadeCount"));
 		}
 	}
 }

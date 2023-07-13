@@ -11,7 +11,8 @@
 typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
 typedef TArray<int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmunitionArray;
 
-DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnCurrentWeaponAmmoChanged, int32, int32, int32);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCurrentWeaponAmmoChanged, int32, int32);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentThrowableCountChanged, int32);
 
 class ARangeWeaponItem;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -25,6 +26,8 @@ public:
 	ARangeWeaponItem* GetCurrentRangeWeaponItem() const;
 
 	FOnCurrentWeaponAmmoChanged OnCurrentWeaponAmmoChangedEvent;
+
+	FOnCurrentThrowableCountChanged OnCurrentThrowableCountChangedEvent;
 
 	void ReloadCurrentWeapon();
 	void ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo, bool bCheckIsFull);
@@ -69,6 +72,9 @@ private:
 	UFUNCTION()
 	void OnCurrentWeaponAmmoChanged(int32 Ammo);
 
+	UFUNCTION()
+	void OnCurrentThrowableCountChanged();
+
 	UPROPERTY(EditDefaultsOnly, Transient, Category = "Character | Attributes")
 	ARangeWeaponItem* CurrentEquippedWeapon;
 	
@@ -83,6 +89,8 @@ private:
 	EEquipmentSlots PreviousEquippedSlot;
 	EEquipmentSlots CurrentEquippedSlot;
 	void EquipAnimationFinished();
+	
+	bool IsReadyToEquip(AEquipableItem* Item);
 
 	FTimerHandle EquipTimer;
 	

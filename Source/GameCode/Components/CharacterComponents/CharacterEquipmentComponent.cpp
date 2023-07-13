@@ -93,9 +93,18 @@ void UCharacterEquipmentComponent::AttachCurrentItemToEquippedSocket()
 	}
 }
 
+bool UCharacterEquipmentComponent::IsReadyToEquip(AEquipableItem* Item)
+{
+	if (AmunitionArray[(uint32)EAmunitionType::FragGrenades] == 0)
+	{
+		return false;
+	}
+	return true;
+}
+
 void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 {
-	if (bIsEquipping)
+	if (bIsEquipping || !IsReadyToEquip(ItemsArray[(uint32)Slot]))
 	{
 		return;
 	}
@@ -104,6 +113,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 	CurrentEquippedItem = ItemsArray[(uint32)Slot];
 	CurrentEquippedWeapon = Cast<ARangeWeaponItem>(CurrentEquippedItem);
 	CurrentThrowableItem = Cast<AThrowableItem>(CurrentEquippedItem);
+	
 	if (IsValid(CurrentEquippedItem))
 	{
 		UAnimMontage* EquipMontage = CurrentEquippedItem->GetCharacterEquipAnimMontage();
@@ -117,6 +127,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		{
 			AttachCurrentItemToEquippedSocket();	
 		}
+		CurrentEquippedSlot = Slot;
 		CurrentEquippedItem->Equip();
 	}
 
@@ -126,8 +137,6 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		OnCurrentWeaponReloadHandle = CurrentEquippedWeapon->OnReloadComplete.AddUFunction(this, FName("OnWeaponReloadComplete"));
 		OnCurrentWeaponAmmoChanged(CurrentEquippedWeapon->GetAmmo());
 	}
-	
-	CurrentEquippedSlot = Slot;
 }
 
 void UCharacterEquipmentComponent::EquipNextItem()
@@ -175,13 +184,10 @@ void UCharacterEquipmentComponent::LaunchCurrentThrowableItem()
 {
 	if (IsValid(CurrentThrowableItem))
 	{
-		int32 Amount = GetAvailableAmunitionForGrenade();
-		if (Amount != 0)
-		{
-			CurrentThrowableItem->Throw();
-			AmunitionArray[(uint32)EAmunitionType::FragGrenades] = Amount - 1;
-		}
+		CurrentThrowableItem->Throw();
 
+		AmunitionArray[(uint32)EAmunitionType::FragGrenades] = GetAvailableAmunitionForGrenade() - 1;
+		OnCurrentThrowableCountChanged();
 
 		bIsEquipping = false;
 		EquipItemInSlot(PreviousEquippedSlot);
@@ -196,6 +202,7 @@ void UCharacterEquipmentComponent::BeginPlay()
 	CachedBaseCharacter = StaticCast<AGCBaseCharacter*>(GetOwner());
 	
 	CreateLoadout();
+	OnCurrentThrowableCountChanged();
 }
 
 void UCharacterEquipmentComponent::CreateLoadout()
@@ -247,8 +254,7 @@ uint32 UCharacterEquipmentComponent::PreviousItemsArraySlotIndex(uint32 CurrentS
 
 int32 UCharacterEquipmentComponent::GetAvailableAmunitionForCurrentWeapon()
 {
-	check(GetCurrentRangeWeaponItem());
-	return AmunitionArray[(uint32)GetCurrentRangeWeaponItem()->GetAmmoType()];
+	check(GetCurrentRangeWeaponItem());	return AmunitionArray[(uint32)GetCurrentRangeWeaponItem()->GetAmmoType()];
 }
 
 int32 UCharacterEquipmentComponent::GetAvailableAmunitionForGrenade()
@@ -265,7 +271,15 @@ void UCharacterEquipmentComponent::OnCurrentWeaponAmmoChanged(int32 Ammo)
 {
 	if (OnCurrentWeaponAmmoChangedEvent.IsBound())
 	{
-		OnCurrentWeaponAmmoChangedEvent.Broadcast(Ammo, GetAvailableAmunitionForCurrentWeapon(), GetAvailableAmunitionForGrenade() );
+		OnCurrentWeaponAmmoChangedEvent.Broadcast(Ammo, GetAvailableAmunitionForCurrentWeapon());
+	}
+}
+
+void UCharacterEquipmentComponent::OnCurrentThrowableCountChanged()
+{
+	if (OnCurrentThrowableCountChangedEvent.IsBound())
+	{
+		OnCurrentThrowableCountChangedEvent.Broadcast(GetAvailableAmunitionForGrenade());
 	}
 }
 
