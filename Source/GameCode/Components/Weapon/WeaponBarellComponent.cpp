@@ -7,19 +7,18 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "Components/DecalComponent.h"
-
+#include "GameCode/Actors/Projectiles/GCProjectile.h"
 
 void UWeaponBarellComponent::Shot(FVector ShotStart, FVector ShotDirection, AController* Controller, float SpreadAngle)
 {
+	FVector MuzzleLocation = GetComponentLocation();
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFlashFX, MuzzleLocation, GetComponentRotation());
+
 	for (int i = 0; i < BulletsPerShot; i++)
 	{
 		ShotDirection += GetBulletSpreadOffset(FMath::RandRange(0.0f, SpreadAngle), ShotDirection.ToOrientationRotator());
-		
-		FVector MuzzleLocation = GetComponentLocation();
 		FVector ShotEnd = ShotStart + FiringRange * ShotDirection;
-
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFlashFX, MuzzleLocation, GetComponentRotation());
-
+		
 	#if ENABLE_DRAW_DEBUG
 		UDebugSubsystem* DebugSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDebugSubsystem>();
 		bool bIsDebugEnabled = DebugSubsystem->IsCategoryEnabled(DebugCategoryRangeWeapon);
@@ -27,32 +26,24 @@ void UWeaponBarellComponent::Shot(FVector ShotStart, FVector ShotDirection, ACon
 		bool bIsDebugEnabled = false;
 	#endif
 
-		FHitResult ShotResult;
-		if (GetWorld()->LineTraceSingleByChannel(ShotResult, ShotStart, ShotEnd, ECC_Bullet))
+		switch (HitRegistration)
 		{
-			ShotEnd = ShotResult.ImpactPoint;
-			if (bIsDebugEnabled)
+			case EHitRegistrationType::HitScan:
 			{
-				DrawDebugSphere(GetWorld(), ShotEnd, 10.0f, 24, FColor::Red, false, 1.0f);
+				bool bHasHit = HitScan(ShotStart, ShotEnd, ShotDirection);
+				if (bIsDebugEnabled && bHasHit )
+				{
+					DrawDebugSphere(GetWorld(), ShotEnd, 10.0f, 24, FColor::Red, false, 1.0f);
+				}
+				break;
 			}
-			AActor* HitActor = ShotResult.GetActor();
-			if (IsValid(HitActor))
+			case EHitRegistrationType::Projectile:
 			{
-				FPointDamageEvent DamageEvent;
-				DamageEvent.HitInfo = ShotResult;
-				DamageEvent.ShotDirection = ShotDirection;
-				DamageEvent.DamageTypeClass = DamageTypeClass;
-				HitActor->TakeDamage(DamageAmount, DamageEvent, Controller, GetOwner());
-			}
-
-			UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, ShotResult.ImpactPoint, ShotResult.ImpactNormal.ToOrientationRotator());
-			if (IsValid(DecalComponent))
-			{
-				DecalComponent->SetFadeScreenSize(0.0001f);
-				DecalComponent->SetFadeOut(DefaultDecalInfo.DecalLifeTime, DefaultDecalInfo.DecalFadeOutTime);
+				LaunchProjectile(ShotStart, ShotDirection);
+				break;
 			}
 		}
-		
+
 		UNiagaraComponent* TraceFXComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, MuzzleLocation, GetComponentRotation());
 		TraceFXComponent->SetVectorParameter(FXParamTraceEnd, ShotEnd);
 		
@@ -60,6 +51,61 @@ void UWeaponBarellComponent::Shot(FVector ShotStart, FVector ShotDirection, ACon
 		{
 			DrawDebugLine(GetWorld(), MuzzleLocation, ShotEnd, FColor::Red, false, 1.0f, 0, 3.0f);
 		}
+	}
+}
+
+APawn* UWeaponBarellComponent::GetOwningPawn() const
+{
+	APawn* PawnOwner = Cast<APawn>(GetOwner());
+	if (!IsValid(PawnOwner))
+	{
+		PawnOwner = Cast<APawn>(GetOwner()->GetOwner());
+	}
+	return PawnOwner;
+}
+
+AController* UWeaponBarellComponent::GetController() const
+{
+	APawn* PawnOwner = GetOwningPawn();
+	return IsValid(PawnOwner) ? PawnOwner->GetController() : nullptr;
+}
+
+bool UWeaponBarellComponent::HitScan(FVector ShotStart, OUT FVector& ShotEnd, FVector ShotDirection)
+{
+	FHitResult ShotResult;
+	bool bHasHit = GetWorld()->LineTraceSingleByChannel(ShotResult, ShotStart, ShotEnd, ECC_Bullet);
+	if (bHasHit)
+	{
+		ShotEnd = ShotResult.ImpactPoint;
+		AActor* HitActor = ShotResult.GetActor();
+		if (IsValid(HitActor))
+		{
+			FPointDamageEvent DamageEvent;
+			DamageEvent.HitInfo = ShotResult;
+			DamageEvent.ShotDirection = ShotDirection;
+			DamageEvent.DamageTypeClass = DamageTypeClass;
+			HitActor->TakeDamage(DamageAmount, DamageEvent, GetController(), GetOwner());
+		}
+
+		UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, ShotResult.ImpactPoint, ShotResult.ImpactNormal.ToOrientationRotator());
+		if (IsValid(DecalComponent))
+		{
+			DecalComponent->SetFadeScreenSize(0.0001f);
+			DecalComponent->SetFadeOut(DefaultDecalInfo.DecalLifeTime, DefaultDecalInfo.DecalFadeOutTime);
+		}
+	}
+
+	return bHasHit;
+}
+
+void UWeaponBarellComponent::LaunchProjectile(const FVector& LaunchStart, const FVector& LaunchDirection)
+{
+	AGCProjectile* Projectile = GetWorld()->SpawnActor<AGCProjectile>(ProjectileClass, LaunchStart, LaunchDirection.ToOrientationRotator());
+
+	if (IsValid(Projectile))
+	{
+		Projectile->SetOwner(GetOwningPawn());
+		Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
 	}
 }
 

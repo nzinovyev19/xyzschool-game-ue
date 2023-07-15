@@ -6,6 +6,13 @@
 #include "Components/SceneComponent.h"
 #include "WeaponBarellComponent.generated.h"
 
+UENUM(BlueprintType)
+enum class EHitRegistrationType : uint8
+{
+	HitScan,
+	Projectile
+};
+
 USTRUCT(BlueprintType)
 struct FDecalInfo
 {
@@ -30,7 +37,7 @@ class GAMECODE_API UWeaponBarellComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	void Shot(FVector ShotStart, FVector ShotDirection, AController* Controller, float SpreadAngle);
 
 protected:
@@ -39,6 +46,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes", meta = (ClampMin = 1, UIMin = 1))
 	int32 BulletsPerShot = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes | Hit registration")
+	EHitRegistrationType HitRegistration = EHitRegistrationType::HitScan;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes | Hit registration", meta = (EditCondition = "HitRegistration == EHitRegistrationType::Projectile"))
+	TSubclassOf<class AGCProjectile> ProjectileClass ;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes | Damage")
 	float DamageAmount = 20.0f;
@@ -56,5 +69,15 @@ protected:
 	FDecalInfo DefaultDecalInfo;
 
 private:
+	APawn* GetOwningPawn() const;
+	AController* GetController() const;
+	
+	bool HitScan(
+		FVector ShotStart,
+		OUT FVector& ShotEnd,
+		FVector ShotDirection
+	);
+	void LaunchProjectile(const FVector& LaunchStart, const FVector& LaunchDirection);
+	
 	FVector GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const;
 };
