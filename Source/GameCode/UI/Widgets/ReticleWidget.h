@@ -22,7 +22,7 @@ protected:
 	void OnEquippedItemChanged(const AEquipableItem* EquipableItem);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reticle")
-	EReticleType CurrentReticle;
+	EReticleType CurrentReticle = EReticleType::None;
 
 private:
 	TWeakObjectPtr<const AEquipableItem> CurrentEquippedItem;
