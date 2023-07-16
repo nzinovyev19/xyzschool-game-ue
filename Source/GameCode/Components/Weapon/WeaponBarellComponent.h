@@ -38,7 +38,7 @@ class GAMECODE_API UWeaponBarellComponent : public USceneComponent
 	GENERATED_BODY()
 
 public:
-	void Shot(FVector ShotStart, FVector ShotDirection, AController* Controller, float SpreadAngle);
+	void Shot(FVector ShotStart, FVector ShotDirection, float SpreadAngle);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes")
@@ -71,6 +71,9 @@ protected:
 private:
 	APawn* GetOwningPawn() const;
 	AController* GetController() const;
+
+	UFUNCTION()
+	void ProcessHit(const FHitResult& HitResult, const FVector& Direction);
 	
 	bool HitScan(
 		FVector ShotStart,

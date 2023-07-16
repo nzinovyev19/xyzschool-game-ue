@@ -19,6 +19,22 @@ void AGCProjectile::LaunchProjectile(FVector Direction)
 	OnProjectileLaunched();
 }
 
+void AGCProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+	CollisionComponent->OnComponentHit.AddDynamic(this, &AGCProjectile::OnCollisionHit);
+}
+
 void AGCProjectile::OnProjectileLaunched()
 {
+}
+
+void AGCProjectile::OnCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OnProjectileHit.IsBound())
+	{
+		OnProjectileHit.Broadcast(Hit, ProjectileMovementComponent->Velocity.GetSafeNormal());
+	}
+	
 }
