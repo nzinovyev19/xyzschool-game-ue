@@ -58,6 +58,8 @@ public:
 	
 	FOnReloadComplete OnReloadComplete;
 
+	virtual EReticleType GetReticleType() const override;
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -118,6 +120,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Ammo")
 	bool bAutoReload = true;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reticle")
+	EReticleType AimReticleType;
 	
 private:
 	int32 Ammo = 0;

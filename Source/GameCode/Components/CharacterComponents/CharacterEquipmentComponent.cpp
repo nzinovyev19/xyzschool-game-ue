@@ -138,6 +138,11 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		OnCurrentWeaponAmmoChanged(CurrentEquippedWeapon->GetAmmo());
 	}
 
+	if (OnEquippedItemChanged.IsBound())
+	{
+		OnEquippedItemChanged.Broadcast(CurrentEquippedItem);
+	}
+
 	CurrentEquippedSlot = Slot;
 }
 

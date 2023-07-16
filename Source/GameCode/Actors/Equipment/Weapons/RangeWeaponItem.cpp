@@ -17,6 +17,8 @@ ARangeWeaponItem::ARangeWeaponItem()
 	WeaponBarell = CreateDefaultSubobject<UWeaponBarellComponent>(TEXT("WeaponBarell"));
 	WeaponBarell->SetupAttachment(WeaponMesh, SocketWeaponMuzzle);
 
+	ReticleType = EReticleType::Default;
+
 	EquippedSocketName = SocketCharacterWeapon;
 }
 
@@ -230,6 +232,11 @@ float ARangeWeaponItem::GetCurrentBulletSpreadAngle() const
 FTransform ARangeWeaponItem::GetForeGripTransform() const
 {
 	return WeaponMesh->GetSocketTransform(SocketWeaponForeGrip);
+}
+
+EReticleType ARangeWeaponItem::GetReticleType() const
+{
+	return !bIsAiming ? ReticleType : AimReticleType;
 }
 
 void ARangeWeaponItem::BeginPlay()

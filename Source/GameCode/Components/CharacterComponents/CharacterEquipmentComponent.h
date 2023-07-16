@@ -13,6 +13,7 @@ typedef TArray<int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmmunition
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCurrentWeaponAmmoChanged, int32, int32);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentThrowableCountChanged, int32);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEquippedItemChanged, const AEquipableItem*);
 
 class ARangeWeaponItem;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -28,6 +29,8 @@ public:
 	FOnCurrentWeaponAmmoChanged OnCurrentWeaponAmmoChangedEvent;
 
 	FOnCurrentThrowableCountChanged OnCurrentThrowableCountChangedEvent;
+
+	FOnEquippedItemChanged OnEquippedItemChanged;
 
 	void ReloadCurrentWeapon();
 	void ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo, bool bCheckIsFull);
