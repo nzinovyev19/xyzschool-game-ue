@@ -26,7 +26,7 @@ protected:
 
 private:
 	UFUNCTION()
-	void UpdateAmmoCount(int32 NewAmmo, int32 NewTotalAmmo, int32 NewGrenadeAmount);
+	void UpdateAmmoCount(int32 NewAmmo, int32 NewTotalAmmo);
 
 	UFUNCTION()
 	void UpdateGrenadeCount(int32 NewGrenadeAmount);

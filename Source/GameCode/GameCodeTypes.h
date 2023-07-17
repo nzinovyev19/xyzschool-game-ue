@@ -41,6 +41,7 @@ enum class EAmunitionType: uint8
 	Rifle,
 	ShotgunShells,
 	FragGrenades,
+	RifleGrenades,
 	MAX UMETA(Hidden)
 };
 
@@ -62,4 +63,11 @@ enum class EReticleType : uint8
 	Default,
 	SniperRifle,
 	MAX UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class EWeaponFireMode : uint8
+{
+	Single,
+	FullAuto,
 };

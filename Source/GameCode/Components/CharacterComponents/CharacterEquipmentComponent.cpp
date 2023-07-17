@@ -261,7 +261,8 @@ uint32 UCharacterEquipmentComponent::PreviousItemsArraySlotIndex(uint32 CurrentS
 
 int32 UCharacterEquipmentComponent::GetAvailableAmunitionForCurrentWeapon()
 {
-	check(GetCurrentRangeWeaponItem());	return AmmunitionArray[(uint32)GetCurrentRangeWeaponItem()->GetAmmoType()];
+	check(GetCurrentRangeWeaponItem());
+	return AmmunitionArray[(uint32)GetCurrentRangeWeaponItem()->GetAmmoType()];
 }
 
 int32 UCharacterEquipmentComponent::GetAvailableAmunitionForGrenade()

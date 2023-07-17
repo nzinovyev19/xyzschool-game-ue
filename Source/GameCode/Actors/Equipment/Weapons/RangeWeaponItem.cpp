@@ -5,7 +5,7 @@
 
 #include "GameCode/GameCodeTypes.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
-#include "GameCode/Components/Weapon/WeaponBarellComponent.h"
+#include "GameCode/Components/Weapon/WeaponBarrelComponent.h"
 
 ARangeWeaponItem::ARangeWeaponItem()
 {
@@ -13,13 +13,17 @@ ARangeWeaponItem::ARangeWeaponItem()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(RootComponent);
+	
+	WeaponBarrel = CreateDefaultSubobject<UWeaponBarrelComponent>(TEXT("WeaponBarrel"));
+	WeaponBarrel->SetupAttachment(WeaponMesh, SocketWeaponMuzzle);
 
-	WeaponBarell = CreateDefaultSubobject<UWeaponBarellComponent>(TEXT("WeaponBarell"));
-	WeaponBarell->SetupAttachment(WeaponMesh, SocketWeaponMuzzle);
+	AlternativeWeaponBarrel = CreateDefaultSubobject<UWeaponBarrelComponent>(TEXT("AlternativeWeaponBarrel"));
+	AlternativeWeaponBarrel->SetupAttachment(WeaponMesh, SocketWeaponMuzzle);
 
 	ReticleType = EReticleType::Default;
 
 	EquippedSocketName = SocketCharacterWeapon;
+	CurrentWeaponBarrel = WeaponBarrel;
 }
 
 void ARangeWeaponItem::MakeShot()
@@ -30,7 +34,7 @@ void ARangeWeaponItem::MakeShot()
 	if (!CanShoot())
 	{
 		StopFire();
-		if (Ammo == 0 && bAutoReload)
+		if (WeaponBarrel->GetAmmo() == 0 && WeaponBarrel->GetAutoReload())
 		{
 			CharacterOwner->Reload();
 		}
@@ -55,8 +59,8 @@ void ARangeWeaponItem::MakeShot()
 
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
 
-	SetAmmo(Ammo - 1);
-	WeaponBarell->Shot(PlayerViewPoint, ViewDirection, GetCurrentBulletSpreadAngle());
+	SetAmmo(WeaponBarrel->GetAmmo() - 1);
+	WeaponBarrel->Shot(PlayerViewPoint, ViewDirection, GetCurrentBulletSpreadAngle());
 
 	GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeaponItem::OnShotTimerElapsed, GetShotTimerInterval(), false);
 }
@@ -174,35 +178,6 @@ void ARangeWeaponItem::EndReload(bool bIsSuccess)
 	}
 }
 
-int32 ARangeWeaponItem::GetAmmo() const
-{
-	return Ammo;
-}
-
-int32 ARangeWeaponItem::GetMaxAmmo() const
-{
-	return MaxAmmo;
-}
-
-void ARangeWeaponItem::SetAmmo(int32 NewAmmo)
-{
-	Ammo = NewAmmo;
-	if (OnAmmoChanged.IsBound())
-	{
-		OnAmmoChanged.Broadcast(Ammo);
-	}
-}
-
-bool ARangeWeaponItem::CanShoot() const
-{
-	return Ammo > 0;
-}
-
-EAmunitionType ARangeWeaponItem::GetAmmoType() const
-{
-	return AmmoType;
-}
-
 float ARangeWeaponItem::GetAimFOV() const
 {
 	return AimFOV;
@@ -223,6 +198,36 @@ float ARangeWeaponItem::GetAimTurnModifier() const
 	return AimTurnModifier;
 }
 
+EAmunitionType ARangeWeaponItem::GetAmmoType() const
+{
+	return WeaponBarrel->GetAmmoType();
+}
+
+int32 ARangeWeaponItem::GetAmmo() const
+{
+	return WeaponBarrel->GetAmmo();
+}
+
+int32 ARangeWeaponItem::GetMaxAmmo() const
+{
+	return WeaponBarrel->GetMaxAmmo();
+}
+
+void ARangeWeaponItem::SetAmmo(int32 NewAmmo)
+{
+	WeaponBarrel->SetAmmo(NewAmmo);
+	if (OnAmmoChanged.IsBound())
+	{
+		OnAmmoChanged.Broadcast(NewAmmo);
+	}
+}
+
+
+bool ARangeWeaponItem::CanShoot() const
+{
+	return WeaponBarrel->GetAmmo() > 0;
+}
+
 float ARangeWeaponItem::GetCurrentBulletSpreadAngle() const
 {
 	float AngleInDegress = bIsAiming ? AimSpreadAngle : SpreadAngle;
@@ -234,6 +239,20 @@ FTransform ARangeWeaponItem::GetForeGripTransform() const
 	return WeaponMesh->GetSocketTransform(SocketWeaponForeGrip);
 }
 
+void ARangeWeaponItem::SwitchWeaponMode()
+{
+	if (!HasAnAlternativeMode) return;
+	if (WeaponBarrel == CurrentWeaponBarrel)
+	{
+		WeaponBarrel = AlternativeWeaponBarrel;
+	}
+	else
+	{
+		WeaponBarrel = CurrentWeaponBarrel;
+	}
+	SetAmmo(WeaponBarrel->GetAmmo());
+}
+
 EReticleType ARangeWeaponItem::GetReticleType() const
 {
 	return !bIsAiming ? ReticleType : AimReticleType;
@@ -242,12 +261,13 @@ EReticleType ARangeWeaponItem::GetReticleType() const
 void ARangeWeaponItem::BeginPlay()
 {
 	Super::BeginPlay();
-	SetAmmo(MaxAmmo);
+	WeaponBarrel->SetAmmo(WeaponBarrel->GetMaxAmmo());
+	AlternativeWeaponBarrel->SetAmmo(AlternativeWeaponBarrel->GetMaxAmmo());
 }
 
 float ARangeWeaponItem::GetShotTimerInterval() const
 {
-	return 60.0f / RateOfFire;
+	return 60.0f / WeaponBarrel->GetRateOfFire();
 }
 
 float ARangeWeaponItem::PlayAnimMontage(UAnimMontage* AnimMontage)

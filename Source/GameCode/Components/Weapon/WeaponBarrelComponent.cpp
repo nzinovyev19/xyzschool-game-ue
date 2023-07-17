@@ -1,4 +1,4 @@
-#include "WeaponBarellComponent.h"
+#include "WeaponBarrelComponent.h"
 
 #include "DrawDebugHelpers.h"
 #include "GameCode/GameCodeTypes.h"
@@ -9,7 +9,41 @@
 #include "Components/DecalComponent.h"
 #include "GameCode/Actors/Projectiles/GCProjectile.h"
 
-void UWeaponBarellComponent::Shot(FVector ShotStart, FVector ShotDirection, float SpreadAngle)
+int32 UWeaponBarrelComponent::GetAmmo() const
+{
+	return Ammo;
+}
+
+int32 UWeaponBarrelComponent::GetMaxAmmo() const
+{
+	return MaxAmmo;
+}
+
+void UWeaponBarrelComponent::SetAmmo(int32 NewAmmo)
+{
+	Ammo = NewAmmo;
+	// if (OnAmmoChanged.IsBound())
+	// {
+	// 	OnAmmoChanged.Broadcast(Ammo);
+	// }
+}
+
+int32 UWeaponBarrelComponent::GetRateOfFire() const
+{
+	return RateOfFire;
+}
+
+bool UWeaponBarrelComponent::GetAutoReload() const
+{
+	return bAutoReload;
+}
+
+EAmunitionType UWeaponBarrelComponent::GetAmmoType() const
+{
+	return AmmoType;
+}
+
+void UWeaponBarrelComponent::Shot(FVector ShotStart, FVector ShotDirection, float SpreadAngle)
 {
 	FVector MuzzleLocation = GetComponentLocation();
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFlashFX, MuzzleLocation, GetComponentRotation());
@@ -54,7 +88,7 @@ void UWeaponBarellComponent::Shot(FVector ShotStart, FVector ShotDirection, floa
 	}
 }
 
-APawn* UWeaponBarellComponent::GetOwningPawn() const
+APawn* UWeaponBarrelComponent::GetOwningPawn() const
 {
 	APawn* PawnOwner = Cast<APawn>(GetOwner());
 	if (!IsValid(PawnOwner))
@@ -64,13 +98,13 @@ APawn* UWeaponBarellComponent::GetOwningPawn() const
 	return PawnOwner;
 }
 
-AController* UWeaponBarellComponent::GetController() const
+AController* UWeaponBarrelComponent::GetController() const
 {
 	APawn* PawnOwner = GetOwningPawn();
 	return IsValid(PawnOwner) ? PawnOwner->GetController() : nullptr;
 }
 
-void UWeaponBarellComponent::ProcessHit(const FHitResult& HitResult, const FVector& Direction)
+void UWeaponBarrelComponent::ProcessHit(const FHitResult& HitResult, const FVector& Direction)
 {
 	AActor* HitActor = HitResult.GetActor();
 	
@@ -91,7 +125,7 @@ void UWeaponBarellComponent::ProcessHit(const FHitResult& HitResult, const FVect
 	}
 }
 
-bool UWeaponBarellComponent::HitScan(FVector ShotStart, OUT FVector& ShotEnd, FVector ShotDirection)
+bool UWeaponBarrelComponent::HitScan(FVector ShotStart, OUT FVector& ShotEnd, FVector ShotDirection)
 {
 	FHitResult ShotResult;
 	bool bHasHit = GetWorld()->LineTraceSingleByChannel(ShotResult, ShotStart, ShotEnd, ECC_Bullet);
@@ -104,19 +138,19 @@ bool UWeaponBarellComponent::HitScan(FVector ShotStart, OUT FVector& ShotEnd, FV
 	return bHasHit;
 }
 
-void UWeaponBarellComponent::LaunchProjectile(const FVector& LaunchStart, const FVector& LaunchDirection)
+void UWeaponBarrelComponent::LaunchProjectile(const FVector& LaunchStart, const FVector& LaunchDirection)
 {
 	AGCProjectile* Projectile = GetWorld()->SpawnActor<AGCProjectile>(ProjectileClass, LaunchStart, LaunchDirection.ToOrientationRotator());
 
 	if (IsValid(Projectile))
 	{
 		Projectile->SetOwner(GetOwningPawn());
-		Projectile->OnProjectileHit.AddDynamic(this, &UWeaponBarellComponent::ProcessHit);
+		Projectile->OnProjectileHit.AddDynamic(this, &UWeaponBarrelComponent::ProcessHit);
 		Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
 	}
 }
 
-FVector UWeaponBarellComponent::GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const
+FVector UWeaponBarrelComponent::GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const
 {
 	float SpreadSize = FMath::Tan(Angle);
 	float RotationAngle = FMath::RandRange(0.0f, 2 * PI);

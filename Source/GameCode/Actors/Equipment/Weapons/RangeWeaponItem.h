@@ -4,17 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameCode/Actors/Equipment/EquipableItem.h"
+#include "GameCode/Components/Weapon/WeaponBarrelComponent.h"
+#include "GameCode/GameCodeTypes.h"
 #include "RangeWeaponItem.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnReloadComplete);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAmmoChanged, int32)
-
-UENUM(BlueprintType)
-enum class EWeaponFireMode : uint8
-{
-	Single,
-	FullAuto,
-};
 
 UENUM(BlueprintType)
 enum class EReloadType : uint8
@@ -39,12 +34,6 @@ public:
 
 	void StartReload();
 	void EndReload(bool bIsSuccess);
-
-	int32 GetAmmo() const;
-	int32 GetMaxAmmo() const;
-	void SetAmmo(int32 NewAmmo);
-	bool CanShoot() const;
-	EAmunitionType GetAmmoType() const;
 	
 	float GetAimFOV() const;
 	float GetAimMovementMaxSpeed() const;
@@ -52,7 +41,15 @@ public:
 	float GetAimLookUpModifier() const;
 	float GetAimTurnModifier() const;
 
+	EAmunitionType GetAmmoType() const;
+	int32 GetAmmo() const;
+	int32 GetMaxAmmo() const;
+	void SetAmmo(int32 NewAmmo);
+	bool CanShoot() const;
+
 	FTransform GetForeGripTransform() const;
+
+	void SwitchWeaponMode();
 
 	FOnAmmoChanged OnAmmoChanged;
 	
@@ -64,10 +61,13 @@ protected:
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class USkeletalMeshComponent* WeaponMesh;
+	USkeletalMeshComponent* WeaponMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UWeaponBarellComponent* WeaponBarell;
+	UWeaponBarrelComponent* WeaponBarrel;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWeaponBarrelComponent* AlternativeWeaponBarrel;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
 	UAnimMontage* WeaponFireMontage;
@@ -89,9 +89,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters")
 	EWeaponFireMode WeaponFireMode = EWeaponFireMode::Single;
 
-	// Rate of fire in round per minute
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters", meta = (ClampMin = 1.0f, UIMin = 1.0f))
-	float RateOfFire = 600.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters")
+	bool HasAnAlternativeMode = false;
 
 	// Bullet spread half angle in degrees
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters", meta = (ClampMin = 0.0f, UIMin = 2.0f, ClampMax = 2.0f, UIMax = 2.0f))
@@ -112,22 +111,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Aiming", meta = (ClampMin = 0.0f, UIMin = 0.0f, ClampMax = 1.0f, UIMax = 1.0f))
 	float AimLookUpModifier = 0.5f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Ammo", meta = (ClampMin = 1, UIMin = 1))
-	int32 MaxAmmo = 30;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Ammo")
-	EAmunitionType AmmoType;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Ammo")
-	bool bAutoReload = true;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Reticle")
 	EReticleType AimReticleType = EReticleType::Default;
 	
 private:
-	int32 Ammo = 0;
 	bool bIsRealoding = false;
 	bool bIsFiring = false;
+
+	UPROPERTY()
+	UWeaponBarrelComponent* CurrentWeaponBarrel;
 
 	float GetCurrentBulletSpreadAngle() const;
 	

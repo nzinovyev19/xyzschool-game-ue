@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
-#include "WeaponBarellComponent.generated.h"
+#include "GameCode/GameCodeTypes.h"
+#include "WeaponBarrelComponent.generated.h"
 
 UENUM(BlueprintType)
 enum class EHitRegistrationType : uint8
@@ -33,11 +34,18 @@ struct FDecalInfo
 
 class UNiagaraSystem;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class GAMECODE_API UWeaponBarellComponent : public USceneComponent
+class GAMECODE_API UWeaponBarrelComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
 public:
+	int32 GetAmmo() const;
+	int32 GetMaxAmmo() const;
+	void SetAmmo(int32 NewAmmo);
+	EAmunitionType GetAmmoType() const;
+	int32 GetRateOfFire() const;
+	bool GetAutoReload() const;
+	
 	void Shot(FVector ShotStart, FVector ShotDirection, float SpreadAngle);
 
 protected:
@@ -68,7 +76,26 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes | Decals")
 	FDecalInfo DefaultDecalInfo;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 MaxAmmo = 30;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	EWeaponFireMode WeaponFireMode = EWeaponFireMode::Single;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	EAmunitionType AmmoType = EAmunitionType::None;
+	
+	// Rate of fire in round per minute
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters", meta = (ClampMin = 1.0f, UIMin = 1.0f))
+    float RateOfFire = 600.0f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bAutoReload = true;
+
+
 private:
+	int32 Ammo = 0;
+
 	APawn* GetOwningPawn() const;
 	AController* GetController() const;
 
