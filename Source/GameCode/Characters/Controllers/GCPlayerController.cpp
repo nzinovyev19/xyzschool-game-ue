@@ -53,6 +53,7 @@ void AGCPlayerController::SetupInputComponent()
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &AGCPlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &AGCPlayerController::PreviousItem);
 	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &AGCPlayerController::EquipPrimaryItem);
+	InputComponent->BindAction("SwitchFireMode", EInputEvent::IE_Pressed, this, &AGCPlayerController::SwitchWeaponMode);
 }
 
 void AGCPlayerController::MoveForward(float Value)
@@ -261,6 +262,14 @@ void AGCPlayerController::EquipPrimaryItem()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->EquipPrimaryItem();
+	}
+}
+
+void AGCPlayerController::SwitchWeaponMode()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->SwitchWeaponMode();
 	}
 }
 

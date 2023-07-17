@@ -63,6 +63,8 @@ private:
 	void PreviousItem();
 	void EquipPrimaryItem();
 
+	void SwitchWeaponMode();
+
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 private:

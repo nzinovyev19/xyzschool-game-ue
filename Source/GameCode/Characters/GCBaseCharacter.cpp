@@ -443,7 +443,12 @@ void AGCBaseCharacter::PreviousItem()
 
 void AGCBaseCharacter::EquipPrimaryItem()
 {
-		CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PrimaryItemSlot);
+	CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PrimaryItemSlot);
+}
+
+void AGCBaseCharacter::SwitchWeaponMode()
+{
+	CharacterEquipmentComponent->GetCurrentRangeWeaponItem()->SwitchWeaponMode();
 }
 
 void AGCBaseCharacter::Tick(float DeltaTime)

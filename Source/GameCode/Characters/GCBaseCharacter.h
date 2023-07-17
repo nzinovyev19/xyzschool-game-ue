@@ -96,6 +96,8 @@ public:
 	void PreviousItem();
 	void EquipPrimaryItem();
 
+	void SwitchWeaponMode();
+
 	virtual void Tick(float DeltaTime) override;
 
 	FORCEINLINE UGCBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return GCBaseCharacterMovementComponent; }
