@@ -250,7 +250,7 @@ void ARangeWeaponItem::SwitchWeaponMode()
 	{
 		WeaponBarrel = CurrentWeaponBarrel;
 	}
-	SetAmmo(WeaponBarrel->GetAmmo());
+	SetAmmo(WeaponBarrel->GetAmmo()); 
 }
 
 EReticleType ARangeWeaponItem::GetReticleType() const
