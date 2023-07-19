@@ -54,6 +54,8 @@ void AGCPlayerController::SetupInputComponent()
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &AGCPlayerController::PreviousItem);
 	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &AGCPlayerController::EquipPrimaryItem);
 	InputComponent->BindAction("SwitchFireMode", EInputEvent::IE_Pressed, this, &AGCPlayerController::SwitchWeaponMode);
+	InputComponent->BindAction("PrimaryMeleeAttack", EInputEvent::IE_Pressed, this, &AGCPlayerController::PrimaryMeleeAttack);
+	InputComponent->BindAction("SecondaryMeleeAttack", EInputEvent::IE_Pressed, this, &AGCPlayerController::SecondaryMeleeAttack);
 }
 
 void AGCPlayerController::MoveForward(float Value)
@@ -270,6 +272,22 @@ void AGCPlayerController::SwitchWeaponMode()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->SwitchWeaponMode();
+	}
+}
+
+void AGCPlayerController::PrimaryMeleeAttack()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->PrimaryMeleeAttack();
+	}
+}
+
+void AGCPlayerController::SecondaryMeleeAttack()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->SecondaryMeleeAttack();
 	}
 }
 

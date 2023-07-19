@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameCode/GameCodeTypes.h"
-#include "GameCode/Actors/Equipment/Throwables/ThrowableItem.h"
 #include "CharacterEquipmentComponent.generated.h"
 
 typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
@@ -16,6 +15,8 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentThrowableCountChanged, int32);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnEquippedItemChanged, const AEquipableItem*);
 
 class ARangeWeaponItem;
+class AThrowableItem;
+class AMeleeWeaponItem;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GAMECODE_API UCharacterEquipmentComponent : public UActorComponent
 {
@@ -25,6 +26,8 @@ public:
 	EEquippableItemType GetCurrentEquippedItemType() const;
 
 	ARangeWeaponItem* GetCurrentRangeWeaponItem() const;
+	
+	AMeleeWeaponItem* GetCurrentMeleeWeaponItem() const;
 
 	FOnCurrentWeaponAmmoChanged OnCurrentWeaponAmmoChangedEvent;
 
@@ -86,6 +89,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Transient, Category = "Character | Attributes")
 	AThrowableItem* CurrentThrowableItem;
+
+	UPROPERTY(EditDefaultsOnly, Transient, Category = "Character | Attributes")
+	AMeleeWeaponItem* CurrentMeleeWeaponItem;
 
 	FDelegateHandle OnCurrentWeaponAmmoChangedHandle;
 	FDelegateHandle OnCurrentWeaponReloadHandle;

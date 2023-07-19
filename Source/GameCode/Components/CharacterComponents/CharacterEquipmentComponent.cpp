@@ -2,6 +2,7 @@
 
 #include "GameCode/GameCodeTypes.h"
 #include "GameCode/Actors/Equipment/Throwables/ThrowableItem.h"
+#include "GameCode/Actors/Equipment/Weapons/MeleeWeaponItem.h"
 #include "GameCode/Actors/Equipment/Weapons/RangeWeaponItem.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
 
@@ -19,6 +20,11 @@ EEquippableItemType UCharacterEquipmentComponent::GetCurrentEquippedItemType() c
 ARangeWeaponItem* UCharacterEquipmentComponent::GetCurrentRangeWeaponItem() const
 {
 	return CurrentEquippedWeapon;
+}
+
+AMeleeWeaponItem* UCharacterEquipmentComponent::GetCurrentMeleeWeaponItem() const
+{
+	return CurrentMeleeWeaponItem;
 }
 
 void UCharacterEquipmentComponent::ReloadCurrentWeapon()
@@ -114,6 +120,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 	CurrentEquippedItem = ItemsArray[(uint32)Slot];
 	CurrentEquippedWeapon = Cast<ARangeWeaponItem>(CurrentEquippedItem);
 	CurrentThrowableItem = Cast<AThrowableItem>(CurrentEquippedItem);
+	CurrentMeleeWeaponItem = Cast<AMeleeWeaponItem>(CurrentEquippedItem);
 	
 	if (IsValid(CurrentEquippedItem))
 	{

@@ -98,6 +98,9 @@ public:
 
 	void SwitchWeaponMode();
 
+	void PrimaryMeleeAttack();
+	void SecondaryMeleeAttack();
+
 	virtual void Tick(float DeltaTime) override;
 
 	FORCEINLINE UGCBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return GCBaseCharacterMovementComponent; }

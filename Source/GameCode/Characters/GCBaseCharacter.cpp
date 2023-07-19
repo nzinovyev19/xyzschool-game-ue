@@ -14,6 +14,7 @@
 #include "GameCode/Components/MovementComponents/GCBaseCharacterMovementComponent.h"
 #include "Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "GameCode/GameCodeTypes.h"
+#include "GameCode/Actors/Equipment/Weapons/MeleeWeaponItem.h"
 #include "GameCode/Components/CharacterComponents/CharacterAttributeComponents.h"
 #include "GameCode/Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "GameCode/Actors/Equipment/Weapons/RangeWeaponItem.h"
@@ -449,6 +450,24 @@ void AGCBaseCharacter::EquipPrimaryItem()
 void AGCBaseCharacter::SwitchWeaponMode()
 {
 	CharacterEquipmentComponent->GetCurrentRangeWeaponItem()->SwitchWeaponMode();
+}
+
+void AGCBaseCharacter::PrimaryMeleeAttack()
+{
+	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
+	if (IsValid(CurrentMeleeWeaponItem))
+	{
+		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::Primary);
+	}
+}
+
+void AGCBaseCharacter::SecondaryMeleeAttack()
+{
+	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
+	if (IsValid(CurrentMeleeWeaponItem))
+	{
+		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::Secondary);
+	}
 }
 
 void AGCBaseCharacter::Tick(float DeltaTime)

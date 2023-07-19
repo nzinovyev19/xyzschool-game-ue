@@ -65,6 +65,9 @@ private:
 
 	void SwitchWeaponMode();
 
+	void PrimaryMeleeAttack();
+	void SecondaryMeleeAttack();
+
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 private:
