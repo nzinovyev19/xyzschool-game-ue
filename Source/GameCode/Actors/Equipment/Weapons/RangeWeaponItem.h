@@ -1,11 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameCode/Actors/Equipment/EquipableItem.h"
 #include "GameCode/Components/Weapon/WeaponBarrelComponent.h"
-#include "GameCode/GameCodeTypes.h"
 #include "RangeWeaponItem.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnReloadComplete);

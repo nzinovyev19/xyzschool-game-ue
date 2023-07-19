@@ -1,15 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "ThrowableItem.h"
 
-#include "GameCode/Actors/Projectiles/GCProjectile.h"
+#include "GameCode/GameCodeTypes.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
+#include "GameCode/Actors/Projectiles/GCProjectile.h"
 
 void AThrowableItem::Throw()
 {
-	checkf(GetOwner()->IsA<AGCBaseCharacter>(), TEXT("AThrowableItem::Throw only character can be an owner of a throwable weapon"))
-	AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
+	AGCBaseCharacter* CharacterOwner = GetCharacterOwner(); 
+	if (!IsValid(CharacterOwner))                           
+	{                                                       
+		return;                                                
+	}                                                       
 	
 	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
 	if (!IsValid(Controller))

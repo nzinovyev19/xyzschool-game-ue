@@ -1,4 +1,25 @@
 #include "EquipableItem.h"
+#include "GameCode/Characters/GCBaseCharacter.h"
+
+
+void AEquipableItem::SetOwner(AActor* NewOwner)
+{
+	Super::SetOwner(NewOwner);
+	if (IsValid(NewOwner))
+	{
+		checkf(GetOwner()->IsA<AGCBaseCharacter>(), TEXT("AEquipableItem::SetOwner only character can be an owner of equipable item" ))
+		CachedCharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
+	}
+	else
+	{
+		CachedCharacterOwner = nullptr;
+	}
+}
+
+AGCBaseCharacter* AEquipableItem::GetCharacterOwner() const
+{
+	return CachedCharacterOwner.IsValid() ? CachedCharacterOwner.Get() : nullptr;
+}
 
 EEquippableItemType AEquipableItem::GetItemType()
 {

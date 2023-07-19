@@ -5,7 +5,6 @@
 
 #include "GameCode/GameCodeTypes.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
-#include "GameCode/Components/Weapon/WeaponBarrelComponent.h"
 
 ARangeWeaponItem::ARangeWeaponItem()
 {
@@ -28,8 +27,11 @@ ARangeWeaponItem::ARangeWeaponItem()
 
 void ARangeWeaponItem::MakeShot()
 {
-	checkf(GetOwner()->IsA<AGCBaseCharacter>(), TEXT("ARangeWeaponItem::Fire only character can be an owner of range weapon"))
-	AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
+	AGCBaseCharacter* CharacterOwner = GetCharacterOwner();
+	if (!IsValid(CharacterOwner))
+	{
+		return;
+	}
 
 	if (!CanShoot())
 	{
@@ -113,8 +115,11 @@ void ARangeWeaponItem::StopAiming()
 
 void ARangeWeaponItem::StartReload()
 {
-	checkf(GetOwner()->IsA<AGCBaseCharacter>(), TEXT("ARangeWeaponItem::StartReload only character can be an owner of range weapon"))
-	AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
+	AGCBaseCharacter* CharacterOwner = GetCharacterOwner();
+	if (!IsValid(CharacterOwner))
+	{
+		return;
+	}
 
 	bIsRealoding = true;
 	if (IsValid(CharacterReloadMontage))
@@ -145,18 +150,20 @@ void ARangeWeaponItem::EndReload(bool bIsSuccess)
 		return;
 	}
 
+	AGCBaseCharacter* CharacterOwner = GetCharacterOwner();
+
 	if (!bIsSuccess)
 	{
-		checkf(GetOwner()->IsA<AGCBaseCharacter>(), TEXT("ARangeWeaponItem::EndReload only character can be an owner of range weapon"))
-		AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
-		CharacterOwner->StopAnimMontage(CharacterReloadMontage);
-		StopAnimMontage(WeaponReloadMontage);
+		if (IsValid(CharacterOwner))
+		{
+			CharacterOwner->StopAnimMontage(CharacterReloadMontage);
+			StopAnimMontage(WeaponReloadMontage);
+		}
 	}
 
 	if (ReloadType == EReloadType::ByBullet)
 	{
-		AGCBaseCharacter* CharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
-		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
+		UAnimInstance* CharacterAnimInstance = IsValid(CharacterOwner) ? CharacterOwner->GetMesh()->GetAnimInstance() : nullptr;
 		if (IsValid(CharacterAnimInstance))
 		{
 			CharacterAnimInstance->Montage_JumpToSection(SectionMontageReloadEnd, CharacterReloadMontage);

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameCode/GameCodeTypes.h"
 #include "GameCode/Actors/Equipment/EquipableItem.h"
 #include "ThrowableItem.generated.h"
 

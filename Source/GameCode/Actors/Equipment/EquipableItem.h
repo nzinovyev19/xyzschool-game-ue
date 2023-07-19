@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameCode/GameCodeTypes.h"
 #include "GameFramework/Actor.h"
+#include "GameCode/GameCodeTypes.h"
+#include "GameCode/Characters/GCBaseCharacter.h"
 #include "EquipableItem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquipmentStateChanged, bool, bIsEquipped);
@@ -15,6 +16,8 @@ class GAMECODE_API AEquipableItem : public AActor
 	GENERATED_BODY()
 
 public:
+	virtual void SetOwner(AActor* NewOwner) override;
+	
 	EEquippableItemType GetItemType();
 
 	UAnimMontage* GetCharacterEquipAnimMontage() const;
@@ -45,4 +48,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Reticle")
 	EReticleType ReticleType = EReticleType::None;
+
+	AGCBaseCharacter* GetCharacterOwner() const;
+	
+private:
+	TWeakObjectPtr<AGCBaseCharacter> CachedCharacterOwner;
+		
 };
