@@ -22,10 +22,6 @@ int32 UWeaponBarrelComponent::GetMaxAmmo() const
 void UWeaponBarrelComponent::SetAmmo(int32 NewAmmo)
 {
 	Ammo = NewAmmo;
-	// if (OnAmmoChanged.IsBound())
-	// {
-	// 	OnAmmoChanged.Broadcast(Ammo);
-	// }
 }
 
 int32 UWeaponBarrelComponent::GetRateOfFire() const
