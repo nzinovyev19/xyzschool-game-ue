@@ -1,15 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// #ifndef SOURCE_GAMECODE_ACTORS_EQUIPMENT_EQUIPABLEITEM_H_
+// #define SOURCE_GAMECODE_ACTORS_EQUIPMENT_EQUIPABLEITEM_H_
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameCode/GameCodeTypes.h"
-#include "GameCode/Characters/GCBaseCharacter.h"
 #include "EquipableItem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquipmentStateChanged, bool, bIsEquipped);
 
+// #endif SOURCE_GAMECODE_ACTORS_EQUIPMENT_EQUIPABLEITEM_H_
+
+class AGCBaseCharacter;
 UCLASS()
 class GAMECODE_API AEquipableItem : public AActor
 {

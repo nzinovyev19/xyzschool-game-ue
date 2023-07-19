@@ -7,6 +7,7 @@
 #include "GameCode/Actors/Equipment/EquipableItem.h"
 #include "ThrowableItem.generated.h"
 
+class AGCBaseCharacter;
 UCLASS(Blueprintable)
 class GAMECODE_API AThrowableItem : public AEquipableItem
 {

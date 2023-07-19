@@ -1,7 +1,6 @@
 #include "EquipableItem.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
 
-
 void AEquipableItem::SetOwner(AActor* NewOwner)
 {
 	Super::SetOwner(NewOwner);

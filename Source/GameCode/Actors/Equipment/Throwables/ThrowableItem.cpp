@@ -1,8 +1,8 @@
 #include "ThrowableItem.h"
 
 #include "GameCode/GameCodeTypes.h"
-#include "GameCode/Characters/GCBaseCharacter.h"
 #include "GameCode/Actors/Projectiles/GCProjectile.h"
+#include "GameCode/Characters/GCBaseCharacter.h"
 
 void AThrowableItem::Throw()
 {

@@ -1,10 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "RangeWeaponItem.h"
 
 #include "GameCode/GameCodeTypes.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
+
 
 ARangeWeaponItem::ARangeWeaponItem()
 {

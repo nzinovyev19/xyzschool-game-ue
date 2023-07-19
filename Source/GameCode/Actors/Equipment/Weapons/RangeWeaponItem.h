@@ -8,6 +8,7 @@
 DECLARE_MULTICAST_DELEGATE(FOnReloadComplete);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAmmoChanged, int32)
 
+class AGCBaseCharacter;
 UENUM(BlueprintType)
 enum class EReloadType : uint8
 {
