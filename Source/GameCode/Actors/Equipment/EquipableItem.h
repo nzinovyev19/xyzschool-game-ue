@@ -1,5 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#ifndef SOURCE_GAMECODE_ACTORS_EQUIPMENT_EQUIPABLEITEM_H_
+#define SOURCE_GAMECODE_ACTORS_EQUIPMENT_EQUIPABLEITEM_H_
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -42,7 +45,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipable item")
 	FName EquippedSocketName = NAME_None;
-
+#endif SOURCE_GAMECODE_ACTORS_EQUIPMENT_EQUIPABLEITEM_H_
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Reticle")
 	EReticleType ReticleType = EReticleType::None;
 };
