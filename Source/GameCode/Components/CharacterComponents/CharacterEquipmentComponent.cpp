@@ -102,11 +102,7 @@ void UCharacterEquipmentComponent::AttachCurrentItemToEquippedSocket()
 bool UCharacterEquipmentComponent::IsReadyToEquip(AEquipableItem* Item)
 {
 	CurrentThrowableItem = Cast<AThrowableItem>(Item);
-	if (IsValid(CurrentThrowableItem) && AmmunitionArray[(uint32)CurrentThrowableItem->GetAmmoType()] == 0)
-	{
-		return false;
-	}
-	return true;
+	return !IsValid(CurrentThrowableItem) || AmmunitionArray[(uint32)CurrentThrowableItem->GetAmmoType()] != 0;
 }
 
 void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
