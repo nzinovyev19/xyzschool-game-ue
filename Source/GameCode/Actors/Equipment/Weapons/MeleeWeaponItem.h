@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameCode/Actors/Equipment/EquipableItem.h"
 #include "GameCode/GameCodeTypes.h"
+#include "GameCode/Components/Weapon/MeleeHitRegistrator.h"
 #include "MeleeWeaponItem.generated.h"
 
 USTRUCT(BlueprintType)
@@ -22,6 +23,7 @@ struct FMeleeAttackDescription
 	class UAnimMontage* AttackMontage;
 };
 
+class UMeleeHitRegistrator;
 UCLASS(Blueprintable)
 class GAMECODE_API AMeleeWeaponItem : public AEquipableItem
 {
@@ -32,11 +34,21 @@ public:
 
 	void StartAttack(EMeleeAttackTypes AttackType);
 
+	void SetIsHitRegistrationEnabled(bool bIsRegistrationEnabled);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Melee attack")
 	TMap<EMeleeAttackTypes, FMeleeAttackDescription> Attacks;
 
+	virtual void BeginPlay() override;
+
 private:
+	UFUNCTION()
+	void ProcessHit(const FHitResult& HitResult, const FVector& Direction);
+	
+	TArray<UMeleeHitRegistrator*> HitRegistrators;
+	TSet<AActor*> HitActors;
+	
 	FMeleeAttackDescription* CurrentAttack;
 	
 	void OnAttackTimerElapsed();

@@ -6,7 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "MeleeHitRegistrator.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMeleeHitRegistred, const FHitResult&, Hit, const FVector&, Direction);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnMeleeHitRegistred, const FHitResult&, const FVector&);
 
 /**
  * 
