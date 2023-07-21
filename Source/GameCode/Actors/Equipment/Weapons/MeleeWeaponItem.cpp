@@ -27,7 +27,6 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 		{
 			float Duration = CharacterAnimInstance->Montage_Play(CurrentAttack->AttackMontage, 1.0f, EMontagePlayReturnType::Duration);
 			GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AMeleeWeaponItem::OnAttackTimerElapsed, Duration, false);
-			
 		}
 		else
 		{
