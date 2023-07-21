@@ -37,5 +37,5 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 
 void AMeleeWeaponItem::OnAttackTimerElapsed()
 {
-	
+	CurrentAttack = nullptr;
 }
