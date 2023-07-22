@@ -5,6 +5,9 @@
 
 #include "GameCode/GameCodeTypes.h"
 #include "GameCode/Utils/GCTraceUtils.h"
+#include "DrawDebugHelpers.h"
+#include "GameCode/Subsystems/DebugSubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 UMeleeHitRegistrator::UMeleeHitRegistrator()
 {
@@ -33,8 +36,12 @@ void UMeleeHitRegistrator::ProcessHitRegistration()
 	UDebugSubsystem* DebugSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDebugSubsystem>();
 	bool bIsDebugEnabled = DebugSubsystem->IsCategoryEnabled(DebugCategoryMeleeWeapon);
 #else
-	bool bIsDebugEnabled = false;
+	bool bIsDebugEnabled = false
 #endif
+	
+	FCollisionQueryParams QueryParams;
+	QueryParams.bTraceComplex = true;
+	QueryParams.AddIgnoredActor(GetOwner()->GetOwner());
 
 	bool bHasHit = GCTraceUtils::SweepSphereSingleByChannel(
 		GetWorld(),
@@ -43,7 +50,7 @@ void UMeleeHitRegistrator::ProcessHitRegistration()
 		CurrentLocation,
 		GetScaledSphereRadius(),
 		ECC_Melee,
-		FCollisionQueryParams::DefaultQueryParam,
+		QueryParams,
 		FCollisionResponseParams::DefaultResponseParam,
 		bIsDebugEnabled,
 		5.0f
