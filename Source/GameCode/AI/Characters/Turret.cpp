@@ -77,11 +77,38 @@ void ATurret::FiringMovement(float DeltaTime)
 	FRotator BarellLocalRotation = TurretBarellComponent->GetRelativeRotation();
 	BarellLocalRotation.Pitch = FMath::FInterpTo(BarellLocalRotation.Pitch, BarellLookAtPitchAngle, DeltaTime, BarellPitchRotationRate);
 	TurretBarellComponent->SetRelativeRotation(BarellLocalRotation);
-	
 }
 
 void ATurret::SetCurrentTurretState(ETurretState NewState)
 {
+	bool bIsStateChanged = NewState != CurrentTurretState;
 	CurrentTurretState = NewState;
+	if (!bIsStateChanged)
+	{
+		return;
+	}
+
+	switch (CurrentTurretState)
+	{
+		case ETurretState::Firing:
+		{
+			GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ATurret::MakeShot, 60.0f / WeaponBarrel->GetRateOfFire(), true, FireDelayTime);
+			break;
+		}
+		case ETurretState::Searching:
+		{
+			GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
+			break;
+		}
+	}
+}
+
+void ATurret::MakeShot()
+{
+	WeaponBarrel->Shot(
+		WeaponBarrel->GetComponentLocation(),
+		WeaponBarrel->GetComponentRotation().RotateVector(FVector::ForwardVector),
+		FMath::DegreesToRadians(BulletSpreadAngle)
+	);
 }
 

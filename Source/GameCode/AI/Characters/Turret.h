@@ -52,6 +52,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret params", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float MinBarellPitchAngle = -30.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret params | Fire", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float BulletSpreadAngle = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret params | Fire", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float FireDelayTime = 3.0f;
 
 private:
 	void SearchingMovement(float DeltaTime);
@@ -62,5 +68,9 @@ private:
 
 	UPROPERTY()
 	AActor* CurrentTarget = nullptr;
+
+	void MakeShot();
+
+	FTimerHandle ShotTimer;
 	
 };
