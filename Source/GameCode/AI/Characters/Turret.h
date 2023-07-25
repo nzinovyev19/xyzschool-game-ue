@@ -24,6 +24,10 @@ public:
 
 	void SetCurrentTarget(AActor* NewTarget);
 
+	virtual FVector GetPawnViewLocation() const override;
+
+	virtual FRotator GetViewRotation() const override;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* TurretBaseComponent;
@@ -36,6 +40,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret params", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float BaseSearchingRotationRate = 60.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret params", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float BaseFiringInterpSpeed = 5.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret params", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float BarellPitchRotationRate = 60.0f;
