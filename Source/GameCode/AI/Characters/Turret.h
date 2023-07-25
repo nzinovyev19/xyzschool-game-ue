@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameCode/GameCodeTypes.h"
 #include "GameFramework/Pawn.h"
 #include "Turret.generated.h"
 
@@ -21,6 +22,8 @@ public:
 	ATurret();
 	
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void PossessedBy(AController* NewController) override;
 
 	void SetCurrentTarget(AActor* NewTarget);
 
@@ -58,6 +61,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret params | Fire", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float FireDelayTime = 3.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret params | Team")
+	ETeams Team = ETeams::Enemy;
 
 private:
 	void SearchingMovement(float DeltaTime);

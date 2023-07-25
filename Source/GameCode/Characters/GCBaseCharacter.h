@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
 #include "GameCode/Components/CharacterComponents/CharacterAttributeComponents.h"
 #include "GameCode/Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "GameFramework/Character.h"
@@ -48,13 +49,15 @@ class UCharacterEquipmentComponent;
 class UGCBaseCharacterMovementComponent;
 
 UCLASS(abstract, NotBlueprintable)
-class GAMECODE_API AGCBaseCharacter : public ACharacter
+class GAMECODE_API AGCBaseCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
 public:
 	AGCBaseCharacter(const FObjectInitializer& ObjectInitializer);
 	virtual void BeginPlay() override;
+
+	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void MoveForward(float Value) {};
 	virtual void MoveRight(float Value) {};
@@ -160,6 +163,10 @@ public:
 	
 	bool IsSwimmingUnderWater() const;
 
+	/* IGenericTeamAgentInterface */
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	/* ~IGenericTeamAgentInterface */
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Controls")
 	float BaseTurnRate = 45.0f;
@@ -239,6 +246,10 @@ protected:
 	
 	virtual void OnStartAimingInternal();
 	virtual void OnStopAimingInternal();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
+	ETeams Team = ETeams::Enemy;
+	
 private:
 	void TryChangeSprintState(float DeltaTime);
 	bool bIsSprintRequested = false;

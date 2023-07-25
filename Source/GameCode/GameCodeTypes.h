@@ -85,3 +85,10 @@ enum class EMeleeAttackTypes : uint8
 	Secondary,
 	MAX UMETA(Hidden)
 };
+
+UENUM(BlueprintType)
+enum class ETeams : uint8
+{
+	Player,
+	Enemy,
+};

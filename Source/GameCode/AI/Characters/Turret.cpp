@@ -1,5 +1,6 @@
 #include "Turret.h"
 
+#include "AIController.h"
 #include "GameCode/Components/Weapon/WeaponBarrelComponent.h"
 
 ATurret::ATurret()
@@ -34,6 +35,17 @@ void ATurret::Tick(float DeltaTime)
 			FiringMovement(DeltaTime);
 			break;
 		}
+	}
+}
+
+void ATurret::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	AAIController* AIController = Cast<AAIController>(NewController);
+	if (IsValid(AIController))
+	{
+		FGenericTeamId TeamId((uint8)Team);
+		AIController->SetGenericTeamId(TeamId);
 	}
 }
 

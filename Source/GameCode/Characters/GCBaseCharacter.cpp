@@ -18,6 +18,7 @@
 #include "GameCode/Components/CharacterComponents/CharacterAttributeComponents.h"
 #include "GameCode/Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "GameCode/Actors/Equipment/Weapons/RangeWeaponItem.h"
+#include "GameCode/AI/Controllers/AITurretController.h"
 #include "GameFramework/PhysicsVolume.h"
 
 AGCBaseCharacter::AGCBaseCharacter(const FObjectInitializer& ObjectInitializer)
@@ -40,6 +41,17 @@ void AGCBaseCharacter::BeginPlay()
 	CharacterAttributeComponents->OnDeathEvent.AddUObject(this, &AGCBaseCharacter::OnDeath);
 	CharacterAttributeComponents->OnOutOfStaminaEventSignature.AddUObject(this, &AGCBaseCharacter::OnOutOfStamina);
 
+}
+
+void AGCBaseCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	AAIController* AIController = Cast<AAIController>(NewController);
+	if (IsValid(AIController))
+	{
+		FGenericTeamId TeamId((uint8)Team);
+		AIController->SetGenericTeamId(TeamId);
+	}
 }
 
 void AGCBaseCharacter::Jump()
@@ -295,6 +307,11 @@ bool AGCBaseCharacter::IsSwimmingUnderWater() const
 	}
 
 	return true;
+}
+
+FGenericTeamId AGCBaseCharacter::GetGenericTeamId() const
+{
+	return FGenericTeamId((uint8)Team);
 }
 
 void AGCBaseCharacter::Prone(bool bClientSimulation)
