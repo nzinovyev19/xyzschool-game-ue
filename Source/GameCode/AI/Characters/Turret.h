@@ -40,7 +40,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWeaponBarrelComponent* WeaponBarrel;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret params", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float BaseSearchingRotationRate = 60.0f;
 

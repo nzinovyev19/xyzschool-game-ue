@@ -7,6 +7,7 @@
 
 #include "GameCode/AI/Characters/Turret.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Sight.h"
 
 AAITurretController::AAITurretController()
@@ -39,17 +40,18 @@ void AAITurretController::ActorsPerceptionUpdated(const TArray<AActor*>& Updated
 	
 	TArray<AActor*>	SeenActors;
 	PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), SeenActors);
+	PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Damage::StaticClass(), SeenActors);
 
 	AActor* ClosestActor = nullptr;
-	float MinSquardDistance = FLT_MAX;
+	float MinSquaredDistance = FLT_MAX;
 	FVector TurretLocation = CachedTurret->GetActorLocation();
 
 	for (AActor* SeenActor : SeenActors)
 	{
 		float CurrentSquaredDistance = (TurretLocation - SeenActor->GetActorLocation()).SizeSquared();
-		if (CurrentSquaredDistance < MinSquardDistance)
+		if (CurrentSquaredDistance < MinSquaredDistance)
 		{
-			MinSquardDistance = CurrentSquaredDistance;
+			MinSquaredDistance = CurrentSquaredDistance;
 			ClosestActor = SeenActor;
 		}
 	}

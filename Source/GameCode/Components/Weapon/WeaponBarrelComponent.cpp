@@ -8,6 +8,8 @@
 #include "NiagaraComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameCode/Actors/Projectiles/GCProjectile.h"
+#include "GameCode/AI/Characters/Turret.h"
+#include "Perception/AISense_Damage.h"
 
 int32 UWeaponBarrelComponent::GetAmmo() const
 {
@@ -103,6 +105,7 @@ AController* UWeaponBarrelComponent::GetController() const
 void UWeaponBarrelComponent::ProcessHit(const FHitResult& HitResult, const FVector& Direction)
 {
 	AActor* HitActor = HitResult.GetActor();
+	ATurret* TurretActor = Cast<ATurret>(HitActor);
 	
 	if (IsValid(HitActor))
 	{
@@ -111,6 +114,10 @@ void UWeaponBarrelComponent::ProcessHit(const FHitResult& HitResult, const FVect
 		DamageEvent.ShotDirection = Direction;
 		DamageEvent.DamageTypeClass = DamageTypeClass;
 		HitActor->TakeDamage(DamageAmount, DamageEvent, GetController(), GetOwner());
+		if (IsValid(TurretActor))
+		{
+			UAISense_Damage::ReportDamageEvent(GetWorld(), HitActor, GetOwningPawn(), DamageAmount, GetOwningPawn()->GetActorLocation(), HitResult.ImpactPoint);
+		}
 	}
 
 	UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, HitResult.ImpactPoint, HitResult.ImpactNormal.ToOrientationRotator());
