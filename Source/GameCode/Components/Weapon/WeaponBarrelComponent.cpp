@@ -114,6 +114,7 @@ void UWeaponBarrelComponent::ProcessHit(const FHitResult& HitResult, const FVect
 		DamageEvent.ShotDirection = Direction;
 		DamageEvent.DamageTypeClass = DamageTypeClass;
 		HitActor->TakeDamage(DamageAmount, DamageEvent, GetController(), GetOwner());
+		// FIXME: don't call damage-event if it friendly team
 		if (IsValid(TurretActor))
 		{
 			UAISense_Damage::ReportDamageEvent(GetWorld(), HitActor, GetOwningPawn(), DamageAmount, GetOwningPawn()->GetActorLocation(), HitResult.ImpactPoint);

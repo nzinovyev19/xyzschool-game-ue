@@ -23,7 +23,7 @@ public:
 
 	FOnOutOfStaminaEventSignature OnOutOfStaminaEventSignature;
 
-	bool IsAlive() { return Health > 0.0f; }
+	bool IsAlive() const;
 
 	float GetHealthPercent() const;
 	

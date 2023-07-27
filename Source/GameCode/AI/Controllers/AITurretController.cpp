@@ -6,6 +6,7 @@
 #include <Actor.h>
 
 #include "GameCode/AI/Characters/Turret.h"
+#include "GameCode/Characters/GCBaseCharacter.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Sight.h"
@@ -39,8 +40,11 @@ void AAITurretController::ActorsPerceptionUpdated(const TArray<AActor*>& Updated
 	}
 	
 	TArray<AActor*>	SeenActors;
-	PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), SeenActors);
 	PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Damage::StaticClass(), SeenActors);
+	if (SeenActors.Num() == 0)
+	{
+		PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), SeenActors);
+	}
 
 	AActor* ClosestActor = nullptr;
 	float MinSquaredDistance = FLT_MAX;

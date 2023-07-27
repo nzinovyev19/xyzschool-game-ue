@@ -15,6 +15,11 @@ UCharacterAttributeComponents::UCharacterAttributeComponents()
 }
 
 
+bool UCharacterAttributeComponents::IsAlive() const
+{
+	return Health > 0.0f;
+}
+
 float UCharacterAttributeComponents::GetHealthPercent() const
 {
 	return Health / MaxHealth;
