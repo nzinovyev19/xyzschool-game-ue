@@ -144,6 +144,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnStartProne", ScriptName = "OnStartProne"))
 	void K2_OnStartProne(float HalfHeightAdjust, float ScaledHalfHeightAdjust);
 
+	UFUNCTION(BlueprintCallable)
 	void Mantle(bool bForce = false);
 	virtual bool CanJumpInternal_Implementation() const override;
 
