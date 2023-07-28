@@ -24,6 +24,9 @@ Implement third person shooter with realizing in parallel the such mechanics as:
   - [x] Sniped rifle
   - [x] Knife
 - [ ] AI and NPC
+  - [x] Turret
+  - [ ] AI-character and patrolling
+  - [ ] Behavior tree
 - [ ] Network and replication
 - [ ] Interaction with objects and inventory
 - [ ] Save system, loading and streaming levels
