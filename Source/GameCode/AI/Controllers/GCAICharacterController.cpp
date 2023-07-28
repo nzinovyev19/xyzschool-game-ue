@@ -5,6 +5,7 @@
 
 #include "Perception/AISense_Sight.h"
 #include "GameCode/AI/Characters/GCAICharacter.h"
+#include "GameCode/Components/CharacterComponents/AIPatrollingComponent.h"
 
 void AGCAICharacterController::SetPawn(APawn* InPawn)
 {
@@ -27,10 +28,54 @@ void AGCAICharacterController::ActorsPerceptionUpdated(const TArray<AActor*>& Up
 	{
 		return;
 	}
+	TryMoveToNextTarget();
+}
 
-	AActor* ClosesActor = GetClosestSensedActor(UAISense_Sight::StaticClass());
-	if (IsValid(ClosesActor))
+void AGCAICharacterController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
+{
+	Super::OnMoveCompleted(RequestID, Result);
+	if (!Result.IsSuccess())
 	{
-		MoveToActor(ClosesActor);	
+		return;
+	}
+	TryMoveToNextTarget();
+}
+
+void AGCAICharacterController::TryMoveToNextTarget()
+{
+	UAIPatrollingComponent* PatrollingComponent = CachedAICharacter->GetPatrollingComponent();
+	AActor* ClosestActor = GetClosestSensedActor(UAISense_Sight::StaticClass());
+	if (IsValid(ClosestActor))
+	{
+		if (!IsTargetReached(ClosestActor->GetActorLocation()))
+		{
+			MoveToActor(ClosestActor);
+		}
+		bIsPatrolling = false;
+	} else if (PatrollingComponent->CanPatrol())
+	{
+		FVector Waypoint = bIsPatrolling ? PatrollingComponent->SelectNextWaypoint() : PatrollingComponent->SelectClosestWaypoint();
+		if (!IsTargetReached(Waypoint))
+		{
+			MoveToLocation(Waypoint);
+		}
+		bIsPatrolling = true;
+	}
+}
+
+bool AGCAICharacterController::IsTargetReached(FVector TargetLocation) const
+{
+	return (TargetLocation - CachedAICharacter->GetActorLocation()).SizeSquared() <= FMath::Square(TargetReachRadius);
+}
+
+void AGCAICharacterController::BeginPlay()
+{
+	Super::BeginPlay();
+	UAIPatrollingComponent* PatrollingComponent = CachedAICharacter->GetPatrollingComponent();
+	if (PatrollingComponent->CanPatrol())
+	{
+		FVector ClosestWaypoint = PatrollingComponent->SelectClosestWaypoint();
+		MoveToLocation(ClosestWaypoint);
+		bIsPatrolling = true;
 	}
 }
