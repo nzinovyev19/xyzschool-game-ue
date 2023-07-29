@@ -27,6 +27,9 @@ const FName DebugCategoryRangeWeapon = FName("RangeWeapon");
 const FName DebugCategoryLedgeDetection = FName("LedgeDetection");
 const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
 
+const FName BB_CurrentTarget = FName("CurrentTarget");
+const FName BB_NextLocation = FName("NextLocation");
+
 UENUM(BlueprintType)
 enum class EEquippableItemType: uint8
 {

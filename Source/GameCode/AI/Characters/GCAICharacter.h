@@ -7,6 +7,7 @@
 #include "GCAICharacter.generated.h"
 
 class UAIPatrollingComponent;
+class UBehaviorTree;
 UCLASS(Blueprintable)
 class GAMECODE_API AGCAICharacter : public AGCBaseCharacter
 {
@@ -17,8 +18,13 @@ public:
 
 	UAIPatrollingComponent* GetPatrollingComponent() const;
 
+	UBehaviorTree* GetBehaviorTree() const;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UAIPatrollingComponent* AIPatrollingComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+	UBehaviorTree* BehaviorTree;
 	
 };
