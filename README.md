@@ -11,8 +11,9 @@ Implement third person shooter with realizing in parallel the such mechanics as:
   - [x] Climbing
   - [x] Stairs
   - [x] Zipline
-  - [ ] WallRun
-  - [ ] Sliding
+  - [ ] Additional mechanics
+    - [ ] WallRun
+    - [ ] Sliding
 - [x] First person character
 - [x] Weapons
   - [x] Damage and Health
@@ -23,10 +24,12 @@ Implement third person shooter with realizing in parallel the such mechanics as:
   - [x] Explosions and grenades
   - [x] Sniped rifle
   - [x] Knife
-- [ ] AI and NPC
+- [x] AI and NPC
   - [x] Turret
-  - [ ] AI-character and patrolling
-  - [ ] Behavior tree
+  - [x] AI-character and patrolling
+    - [ ] "Ping-pong" patrolling
+  - [x] Behavior tree
+    - [ ] Service of fire
 - [ ] Network and replication
 - [ ] Interaction with objects and inventory
 - [ ] Save system, loading and streaming levels
