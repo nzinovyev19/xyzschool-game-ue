@@ -101,6 +101,16 @@ void ARangeWeaponItem::StopFire()
 	bIsFiring = false;
 }
 
+bool ARangeWeaponItem::IsFiring() const
+{
+	return bIsFiring;
+}
+
+bool ARangeWeaponItem::IsReloading() const
+{
+	return bIsRealoding;
+}
+
 void ARangeWeaponItem::StartAiming()
 {
 	bIsAiming = true;

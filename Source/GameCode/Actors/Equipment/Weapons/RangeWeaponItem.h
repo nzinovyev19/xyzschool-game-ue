@@ -27,11 +27,15 @@ public:
 	void StartFire();
 	void StopFire();
 
+	bool IsFiring() const;
+
 	void StartAiming();
 	void StopAiming();
 
 	void StartReload();
 	void EndReload(bool bIsSuccess);
+
+	bool IsReloading() const;
 	
 	float GetAimFOV() const;
 	float GetAimMovementMaxSpeed() const;
