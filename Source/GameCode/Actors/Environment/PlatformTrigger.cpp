@@ -4,12 +4,27 @@
 #include "PlatformTrigger.h"
 #include "GameCode/GameCodeTypes.h"
 #include "Components/BoxComponent.h"
+#include "Net/UnrealNetwork.h"
 
 APlatformTrigger::APlatformTrigger()
 {
+	bReplicates = true;
+	NetUpdateFrequency = 2.0f;
+	MinNetUpdateFrequency = 2.0f;
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	TriggerBox->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
 	SetRootComponent(TriggerBox);
+}
+
+void APlatformTrigger::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(APlatformTrigger, bIsActivated);
+}
+
+void APlatformTrigger::OnRep_IsActivated(bool bIsActivated_Old)
+{
+	SetIsActivated(bIsActivated);
 }
 
 void APlatformTrigger::BeginPlay()
@@ -21,10 +36,9 @@ void APlatformTrigger::BeginPlay()
 
 void APlatformTrigger::SetIsActivated(bool bIsActivated_In)
 {
-	bIsActivated = bIsActivated_In;
 	if (OnTriggerActivated.IsBound())
 	{
-		OnTriggerActivated.Broadcast(bIsActivated);
+		OnTriggerActivated.Broadcast(bIsActivated_In);
 	}
 }
 
@@ -36,11 +50,15 @@ void APlatformTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp
 		return;
 	}
 
-	OverlappedPawns.AddUnique(OtherPawn);
-
-	if (!bIsActivated && OverlappedPawns.Num() > 0)
+	if (OtherPawn->IsLocallyControlled() || GetLocalRole() == ROLE_Authority)
 	{
-		SetIsActivated(true);
+		OverlappedPawns.AddUnique(OtherPawn);
+
+		if (!bIsActivated && OverlappedPawns.Num() > 0)
+		{
+			bIsActivated = true;
+			SetIsActivated(true);
+		}
 	}
 }
 
@@ -52,10 +70,15 @@ void APlatformTrigger::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedCompon
 		return;
 	}
 
-	OverlappedPawns.RemoveSingleSwap(OtherPawn);
-
-	if (bIsActivated && OverlappedPawns.Num() == 0)
+	if (OtherPawn->IsLocallyControlled() || GetLocalRole() == ROLE_Authority)
 	{
-		SetIsActivated(false);
+		OverlappedPawns.RemoveSingleSwap(OtherPawn);
+
+		if (bIsActivated && OverlappedPawns.Num() == 0)
+		{
+			bIsActivated = false;
+			SetIsActivated(false);
+		}
 	}
+
 }
