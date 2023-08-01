@@ -19,7 +19,7 @@ APlatformTrigger::APlatformTrigger()
 void APlatformTrigger::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(APlatformTrigger, bIsActivated);
+	// DOREPLIFETIME(APlatformTrigger, bIsActivated);
 }
 
 void APlatformTrigger::OnRep_IsActivated(bool bIsActivated_Old)
@@ -42,6 +42,15 @@ void APlatformTrigger::SetIsActivated(bool bIsActivated_In)
 	}
 }
 
+void APlatformTrigger::Multicast_SetIsActivated_Implementation(bool bIsActivated_In)
+{
+	bIsActivated = bIsActivated_In;
+	if (OnTriggerActivated.IsBound())
+	{
+		OnTriggerActivated.Broadcast(bIsActivated_In);
+	}
+}
+
 void APlatformTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	APawn* OtherPawn = Cast<APawn>(OtherActor);
@@ -50,14 +59,13 @@ void APlatformTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp
 		return;
 	}
 
-	if (OtherPawn->IsLocallyControlled() || GetLocalRole() == ROLE_Authority)
+	if (GetLocalRole() == ROLE_Authority)
 	{
 		OverlappedPawns.AddUnique(OtherPawn);
 
 		if (!bIsActivated && OverlappedPawns.Num() > 0)
 		{
-			bIsActivated = true;
-			SetIsActivated(true);
+			Multicast_SetIsActivated(true);
 		}
 	}
 }
@@ -70,14 +78,13 @@ void APlatformTrigger::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedCompon
 		return;
 	}
 
-	if (OtherPawn->IsLocallyControlled() || GetLocalRole() == ROLE_Authority)
+	if (GetLocalRole() == ROLE_Authority)
 	{
 		OverlappedPawns.RemoveSingleSwap(OtherPawn);
 
 		if (bIsActivated && OverlappedPawns.Num() == 0)
 		{
-			bIsActivated = false;
-			SetIsActivated(false);
+			Multicast_SetIsActivated(true);
 		}
 	}
 
