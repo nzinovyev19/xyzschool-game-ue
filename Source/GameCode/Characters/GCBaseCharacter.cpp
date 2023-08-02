@@ -14,7 +14,6 @@
 #include "GameCode/Components/MovementComponents/GCBaseCharacterMovementComponent.h"
 #include "Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "GameCode/GameCodeTypes.h"
-#include "GameCode/Actors/Environment/PlatformTrigger.h"
 #include "GameCode/Actors/Equipment/Weapons/MeleeWeaponItem.h"
 #include "GameCode/Components/CharacterComponents/CharacterAttributeComponents.h"
 #include "GameCode/Components/CharacterComponents/CharacterEquipmentComponent.h"
@@ -313,18 +312,6 @@ bool AGCBaseCharacter::IsSwimmingUnderWater() const
 FGenericTeamId AGCBaseCharacter::GetGenericTeamId() const
 {
 	return FGenericTeamId((uint8)Team);
-}
-
-void AGCBaseCharacter::Client_ActivatePlatformTrigger_Implementation(APlatformTrigger* PlatformTrigger,
-	bool bIsActivated)
-{
-	PlatformTrigger->SetIsActivated(bIsActivated);
-}
-
-void AGCBaseCharacter::Server_ActivatePlatformTrigger_Implementation(APlatformTrigger* PlatformTrigger,
-                                                                     bool bIsActivated)
-{
-	PlatformTrigger->Multicast_SetIsActivated(bIsActivated);
 }
 
 void AGCBaseCharacter::Prone(bool bClientSimulation)

@@ -19,13 +19,8 @@ public:
 	// Sets default values for this actor's properties
 	APlatformTrigger();
 
-	void SetIsActivated(bool bIsActivated_In);
-
 	UPROPERTY(BlueprintAssignable)
 	FOnTriggerActivated OnTriggerActivated;
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void Multicast_SetIsActivated(bool bIsActivated_In);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -36,10 +31,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* TriggerBox;
 
-	// UPROPERTY(ReplicatedUsing=OnRep_IsActivated)
+	UPROPERTY(ReplicatedUsing=OnRep_IsActivated)
 	bool bIsActivated = false;
 	
 private:
+	void SetIsActivated(bool bIsActivated_In);
+	
 	UFUNCTION()
 	void OnRep_IsActivated(bool bIsActivated_Old);
 	
