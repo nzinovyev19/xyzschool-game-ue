@@ -4,6 +4,7 @@
 #include "PlatformTrigger.h"
 #include "GameCode/GameCodeTypes.h"
 #include "Components/BoxComponent.h"
+#include "GameCode/Characters/GCBaseCharacter.h"
 #include "Net/UnrealNetwork.h"
 
 APlatformTrigger::APlatformTrigger()
@@ -53,38 +54,38 @@ void APlatformTrigger::Multicast_SetIsActivated_Implementation(bool bIsActivated
 
 void APlatformTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	APawn* OtherPawn = Cast<APawn>(OtherActor);
+	AGCBaseCharacter* OtherPawn = Cast<AGCBaseCharacter>(OtherActor);
 	if (!IsValid(OtherPawn))
 	{
 		return;
 	}
 
-	if (GetLocalRole() == ROLE_Authority)
+	if (OtherPawn->IsLocallyControlled())
 	{
 		OverlappedPawns.AddUnique(OtherPawn);
 
 		if (!bIsActivated && OverlappedPawns.Num() > 0)
 		{
-			Multicast_SetIsActivated(true);
+			OtherPawn->Server_ActivatePlatformTrigger(this, true);
 		}
 	}
 }
 
 void APlatformTrigger::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	APawn* OtherPawn = Cast<APawn>(OtherActor);
+	AGCBaseCharacter* OtherPawn = Cast<AGCBaseCharacter>(OtherActor);
 	if (!IsValid(OtherPawn))
 	{
 		return;
 	}
 
-	if (GetLocalRole() == ROLE_Authority)
+	if (OtherPawn->IsLocallyControlled())
 	{
 		OverlappedPawns.RemoveSingleSwap(OtherPawn);
 
 		if (bIsActivated && OverlappedPawns.Num() == 0)
 		{
-			Multicast_SetIsActivated(true);
+			OtherPawn->Server_ActivatePlatformTrigger(this, false);
 		}
 	}
 
