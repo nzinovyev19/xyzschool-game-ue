@@ -171,6 +171,9 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_ActivatePlatformTrigger(class APlatformTrigger* PlatformTrigger, bool bIsActivated);
 
+	UFUNCTION(Client, Reliable)
+	void Client_ActivatePlatformTrigger(class APlatformTrigger* PlatformTrigger, bool bIsActivated);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Controls")
 	float BaseTurnRate = 45.0f;

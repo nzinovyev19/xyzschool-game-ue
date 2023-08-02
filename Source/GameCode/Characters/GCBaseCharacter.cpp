@@ -315,8 +315,14 @@ FGenericTeamId AGCBaseCharacter::GetGenericTeamId() const
 	return FGenericTeamId((uint8)Team);
 }
 
-void AGCBaseCharacter::Server_ActivatePlatformTrigger_Implementation(APlatformTrigger* PlatformTrigger,
+void AGCBaseCharacter::Client_ActivatePlatformTrigger_Implementation(APlatformTrigger* PlatformTrigger,
 	bool bIsActivated)
+{
+	PlatformTrigger->SetIsActivated(bIsActivated);
+}
+
+void AGCBaseCharacter::Server_ActivatePlatformTrigger_Implementation(APlatformTrigger* PlatformTrigger,
+                                                                     bool bIsActivated)
 {
 	PlatformTrigger->Multicast_SetIsActivated(bIsActivated);
 }

@@ -60,13 +60,13 @@ void APlatformTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp
 		return;
 	}
 
-	if (OtherPawn->IsLocallyControlled())
+	if (GetLocalRole() == ROLE_Authority)
 	{
 		OverlappedPawns.AddUnique(OtherPawn);
 
 		if (!bIsActivated && OverlappedPawns.Num() > 0)
 		{
-			OtherPawn->Server_ActivatePlatformTrigger(this, true);
+			OtherPawn->Client_ActivatePlatformTrigger(this, true);
 		}
 	}
 }
@@ -79,13 +79,13 @@ void APlatformTrigger::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedCompon
 		return;
 	}
 
-	if (OtherPawn->IsLocallyControlled())
+	if (GetLocalRole() == ROLE_Authority)
 	{
 		OverlappedPawns.RemoveSingleSwap(OtherPawn);
 
 		if (bIsActivated && OverlappedPawns.Num() == 0)
 		{
-			OtherPawn->Server_ActivatePlatformTrigger(this, false);
+			OtherPawn->Client_ActivatePlatformTrigger(this, false);
 		}
 	}
 
