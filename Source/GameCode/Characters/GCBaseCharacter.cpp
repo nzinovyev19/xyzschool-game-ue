@@ -20,6 +20,7 @@
 #include "GameCode/Actors/Equipment/Weapons/RangeWeaponItem.h"
 #include "GameCode/AI/Controllers/AITurretController.h"
 #include "GameFramework/PhysicsVolume.h"
+#include "Net/UnrealNetwork.h"
 
 AGCBaseCharacter::AGCBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer.SetDefaultSubobjectClass<UGCBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -41,6 +42,12 @@ void AGCBaseCharacter::BeginPlay()
 	CharacterAttributeComponents->OnDeathEvent.AddUObject(this, &AGCBaseCharacter::OnDeath);
 	CharacterAttributeComponents->OnOutOfStaminaEventSignature.AddUObject(this, &AGCBaseCharacter::OnOutOfStamina);
 
+}
+
+void AGCBaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AGCBaseCharacter, bIsMantling);
 }
 
 void AGCBaseCharacter::PossessedBy(AController* NewController)
@@ -142,6 +149,8 @@ void AGCBaseCharacter::Mantle(bool bForce)
 	FLedgeDescription LedgeDescription;
 	if (LedgeDetectorComponent->DetectLedge(LedgeDescription) && !GCBaseCharacterMovementComponent->IsMantling())
 	{
+		bIsMantling = true;
+		
 		FMantlingMovementParameters MantlingParameters;
 		MantlingParameters.LedgeActor = LedgeDescription.LedgeActor;
 		MantlingParameters.InitialLocation = GetActorLocation();
@@ -169,11 +178,22 @@ void AGCBaseCharacter::Mantle(bool bForce)
 
 		MantlingParameters.InitialAnimationLocation = MantlingParameters.TargetLocation - MantlingSettings.AnimationCorrectionZ * FVector::UpVector + MantlingSettings.AnimationCorrectionXY * LedgeDescription.LedgeNormal;
 
-		GCBaseCharacterMovementComponent->StartMantle(MantlingParameters);
+		if (IsLocallyControlled() || GetLocalRole() == ROLE_Authority)
+		{
+			GCBaseCharacterMovementComponent->StartMantle(MantlingParameters);
+		}
 
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(MantlingSettings.MantlingMontage, 1.0f, EMontagePlayReturnType::Duration, MantlingParameters.StartTime);
 		OnMantle(MantlingSettings, MantlingParameters.StartTime);
+	}
+}
+
+void AGCBaseCharacter::OnRep_IsMantling(bool bWasMantling)
+{
+	if (GetLocalRole() == ROLE_SimulatedProxy && !bWasMantling && bIsMantling)
+	{
+		Mantle(true);
 	}
 }
 

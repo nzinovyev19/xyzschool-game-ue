@@ -57,6 +57,8 @@ public:
 	AGCBaseCharacter(const FObjectInitializer& ObjectInitializer);
 	virtual void BeginPlay() override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override; 
+
 	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void MoveForward(float Value) {};
@@ -146,6 +148,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Mantle(bool bForce = false);
+
+	UPROPERTY(ReplicatedUsing=OnRep_IsMantling)
+	bool bIsMantling;
+
+	UFUNCTION()
+	void OnRep_IsMantling(bool bWasMantling);
+	
 	virtual bool CanJumpInternal_Implementation() const override;
 
 	void RegisterInteractiveActor(AInteractiveActor* InteractiveActor);

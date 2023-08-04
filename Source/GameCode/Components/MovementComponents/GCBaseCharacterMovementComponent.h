@@ -197,6 +197,7 @@ public:
 	
 private:
 	uint8 bSavedIsSprinting : 1;
+	uint8 bSavedIsMantling : 1;
 	
 };
 
