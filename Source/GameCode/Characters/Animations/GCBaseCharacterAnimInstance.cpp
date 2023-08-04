@@ -46,7 +46,7 @@ void UGCBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	const UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent();
 	CurrentEquippedItemType = CharacterEquipment->GetCurrentEquippedItemType();
-	AimRotation = CachedBaseCharacter->GetBaseAimRotation();
+	AimRotation = CachedBaseCharacter->GetAimOffset();
 
 	ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipment->GetCurrentRangeWeaponItem();
 	if (IsValid(CurrentRangeWeapon))

@@ -435,6 +435,15 @@ void AGCBaseCharacter::StopAiming()
 	OnStopAiming();
 }
 
+FRotator AGCBaseCharacter::GetAimOffset()
+{
+	FVector AimDirectionWorld = GetBaseAimRotation().Vector();
+	FVector AimDirectionLocal = GetTransform().InverseTransformVectorNoScale(AimDirectionWorld);
+	FRotator Result = AimDirectionLocal.ToOrientationRotator();
+
+	return Result;
+}
+
 void AGCBaseCharacter::OnStartAiming_Implementation()
 {
 	OnStartAimingInternal();

@@ -88,6 +88,7 @@ public:
 
 	void StartAiming();
 	void StopAiming();
+	FRotator GetAimOffset();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")
 	void OnStartAiming();
