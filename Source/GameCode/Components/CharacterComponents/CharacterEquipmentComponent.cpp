@@ -5,6 +5,28 @@
 #include "GameCode/Actors/Equipment/Weapons/MeleeWeaponItem.h"
 #include "GameCode/Actors/Equipment/Weapons/RangeWeaponItem.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
+#include "Net/UnrealNetwork.h"
+
+UCharacterEquipmentComponent::UCharacterEquipmentComponent()
+{
+	SetIsReplicatedByDefault(true);
+}
+
+void UCharacterEquipmentComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UCharacterEquipmentComponent, CurrentEquippedSlot);	
+}
+
+void UCharacterEquipmentComponent::Server_EquipItemInSlot_Implementation(EEquipmentSlots Slot)
+{
+	EquipItemInSlot(Slot);
+}
+
+void UCharacterEquipmentComponent::OnRep_CurrentEquippedSlot(EEquipmentSlots CurrentEquippedSlot_Old)
+{
+	EquipItemInSlot(CurrentEquippedSlot);
+}
 
 EEquippableItemType UCharacterEquipmentComponent::GetCurrentEquippedItemType() const
 {
@@ -148,6 +170,11 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 	}
 
 	CurrentEquippedSlot = Slot;
+
+	if (GetOwner()->GetLocalRole() == ROLE_AutonomousProxy)
+	{
+		Server_EquipItemInSlot(CurrentEquippedSlot);
+	}
 }
 
 void UCharacterEquipmentComponent::EquipNextItem()
