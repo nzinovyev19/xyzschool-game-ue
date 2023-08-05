@@ -23,14 +23,14 @@ void UWeaponBarrelComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	FDoRepLifetimeParams RepParams;
 	RepParams.Condition = COND_SimulatedOnly;
 	RepParams.RepNotifyCondition = REPNOTIFY_Always;
-	DOREPLIFETIME_WITH_PARAMS(UWeaponBarrelComponent, LastsShotsInfo, RepParams);
+	DOREPLIFETIME_WITH_PARAMS(UWeaponBarrelComponent, LastShotsInfo, RepParams);
 }
 
 void UWeaponBarrelComponent::ShotInternal(const TArray<FShotInfo>& ShotsInfo)
 {
 	if (GetOwner()->HasAuthority())
 	{
-		LastsShotsInfo = ShotsInfo;
+		LastShotsInfo = ShotsInfo;
 	}
 	
 	FVector MuzzleLocation = GetComponentLocation();
@@ -54,7 +54,7 @@ void UWeaponBarrelComponent::ShotInternal(const TArray<FShotInfo>& ShotsInfo)
 		case EHitRegistrationType::HitScan:
 			{
 				bool bHasHit = HitScan(ShotStart, ShotEnd, ShotDirection);
-				if (bIsDebugEnabled && bHasHit )
+				if (bIsDebugEnabled && bHasHit)
 				{
 					DrawDebugSphere(GetWorld(), ShotEnd, 10.0f, 24, FColor::Red, false, 1.0f);
 				}
@@ -84,7 +84,7 @@ void UWeaponBarrelComponent::Server_Shot_Implementation(const TArray<FShotInfo>&
 
 void UWeaponBarrelComponent::OnRep_LastShotsInfo()
 {
-	ShotInternal(LastsShotsInfo);
+	ShotInternal(LastShotsInfo);
 }
 
 int32 UWeaponBarrelComponent::GetAmmo() const
@@ -152,6 +152,13 @@ AController* UWeaponBarrelComponent::GetController() const
 
 void UWeaponBarrelComponent::ProcessHit(const FHitResult& HitResult, const FVector& Direction)
 {
+	UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, HitResult.ImpactPoint, HitResult.ImpactNormal.ToOrientationRotator());
+	if (IsValid(DecalComponent))
+	{
+		DecalComponent->SetFadeScreenSize(0.0001f);
+		DecalComponent->SetFadeOut(DefaultDecalInfo.DecalLifeTime, DefaultDecalInfo.DecalFadeOutTime);
+	}
+	
 	AActor* HitActor = HitResult.GetActor();
 	ATurret* TurretActor = Cast<ATurret>(HitActor);
 	
@@ -167,13 +174,6 @@ void UWeaponBarrelComponent::ProcessHit(const FHitResult& HitResult, const FVect
 		{
 			UAISense_Damage::ReportDamageEvent(GetWorld(), HitActor, GetOwningPawn(), DamageAmount, GetOwningPawn()->GetActorLocation(), HitResult.ImpactPoint);
 		}
-	}
-
-	UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, HitResult.ImpactPoint, HitResult.ImpactNormal.ToOrientationRotator());
-	if (IsValid(DecalComponent))
-	{
-		DecalComponent->SetFadeScreenSize(0.0001f);
-		DecalComponent->SetFadeOut(DefaultDecalInfo.DecalLifeTime, DefaultDecalInfo.DecalFadeOutTime);
 	}
 }
 

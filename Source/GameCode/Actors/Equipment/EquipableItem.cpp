@@ -1,6 +1,11 @@
 #include "EquipableItem.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
 
+AEquipableItem::AEquipableItem()
+{
+	SetReplicates(true);
+}
+
 void AEquipableItem::SetOwner(AActor* NewOwner)
 {
 	Super::SetOwner(NewOwner);
@@ -8,6 +13,10 @@ void AEquipableItem::SetOwner(AActor* NewOwner)
 	{
 		checkf(GetOwner()->IsA<AGCBaseCharacter>(), TEXT("AEquipableItem::SetOwner only character can be an owner of equipable item" ))
 		CachedCharacterOwner = StaticCast<AGCBaseCharacter*>(GetOwner());
+		if (GetLocalRole() == ROLE_Authority)
+		{
+			SetAutonomousProxy(true);
+		}
 	}
 	else
 	{

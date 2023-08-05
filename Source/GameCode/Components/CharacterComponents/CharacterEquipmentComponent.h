@@ -68,9 +68,15 @@ protected:
 private:
 	UFUNCTION(Server, Reliable)
 	void Server_EquipItemInSlot(EEquipmentSlots Slot);
+
+	UPROPERTY(Replicated)
+	TArray<int32> AmmunitionArray;
 	
-	TAmmunitionArray AmmunitionArray;
-	TItemsArray ItemsArray;
+	UPROPERTY(ReplicatedUsing=OnRep_ItemsArray)
+	TArray<AEquipableItem*> ItemsArray;
+
+	UFUNCTION()
+	void OnRep_ItemsArray();
 	
 	void CreateLoadout();
 

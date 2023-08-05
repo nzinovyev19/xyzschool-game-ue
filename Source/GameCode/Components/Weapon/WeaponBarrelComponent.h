@@ -122,7 +122,7 @@ private:
 	void Server_Shot(const TArray<FShotInfo>& ShotsInfo);
 
 	UPROPERTY(ReplicatedUsing=OnRep_LastShotsInfo)
-	TArray<FShotInfo> LastsShotsInfo;
+	TArray<FShotInfo> LastShotsInfo;
 
 	UFUNCTION()
 	void OnRep_LastShotsInfo();

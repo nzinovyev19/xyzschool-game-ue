@@ -15,7 +15,9 @@ UCharacterEquipmentComponent::UCharacterEquipmentComponent()
 void UCharacterEquipmentComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UCharacterEquipmentComponent, CurrentEquippedSlot);	
+	DOREPLIFETIME(UCharacterEquipmentComponent, CurrentEquippedSlot);
+	DOREPLIFETIME(UCharacterEquipmentComponent, AmmunitionArray);
+	DOREPLIFETIME(UCharacterEquipmentComponent, ItemsArray);
 }
 
 void UCharacterEquipmentComponent::Server_EquipItemInSlot_Implementation(EEquipmentSlots Slot)
@@ -244,8 +246,24 @@ void UCharacterEquipmentComponent::BeginPlay()
 	OnCurrentThrowableCountChanged();
 }
 
+void UCharacterEquipmentComponent::OnRep_ItemsArray()
+{
+	for (AEquipableItem* Item : ItemsArray)
+	{
+		if (IsValid(Item))
+		{
+			Item->UnEquip();
+		}
+	}
+}
+
 void UCharacterEquipmentComponent::CreateLoadout()
 {
+	if (GetOwner()->GetLocalRole() < ROLE_Authority)
+	{
+		return;
+	}
+	
 	AmmunitionArray.AddZeroed((uint32)EAmunitionType::MAX);
 	for (const TPair<EAmunitionType, int32>& AmmoPair : MaxAmunitionAmount)
 	{

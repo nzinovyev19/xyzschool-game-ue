@@ -11,7 +11,10 @@ void AGCPlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
 	CachedBaseCharacter = Cast<AGCBaseCharacter>(InPawn);
-	CreateAndInitializeWidgets();
+	if (IsLocalController())
+	{
+		CreateAndInitializeWidgets();
+	}
 }
 
 bool AGCPlayerController::GetIgnoreCameraPitch()
