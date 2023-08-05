@@ -8,10 +8,18 @@
 #include "GameCode/Components/MovementComponents/GCBaseCharacterMovementComponent.h"
 #include "GameCode/Subsystems/DebugSubsystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 UCharacterAttributeComponents::UCharacterAttributeComponents()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	SetIsReplicatedByDefault(true);
+}
+
+void UCharacterAttributeComponents::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UCharacterAttributeComponents, Health);
 }
 
 
@@ -47,7 +55,11 @@ void UCharacterAttributeComponents::BeginPlay()
 	Health = MaxHealth;
 	Oxygen = MaxOxygen;
 	Stamina = MaxStamina;
-	CachedBaseCharacterOwner->OnTakeAnyDamage.AddDynamic(this, &UCharacterAttributeComponents::OnTakeAnyDamage);
+
+	if (GetOwner()->HasAuthority())
+	{
+		CachedBaseCharacterOwner->OnTakeAnyDamage.AddDynamic(this, &UCharacterAttributeComponents::OnTakeAnyDamage);
+	}
 }
 
 void UCharacterAttributeComponents::UpdateStaminaValue(float DeltaTime)
@@ -81,6 +93,21 @@ void UCharacterAttributeComponents::UpdateOxygenValue(float DeltaTime)
 			// TODO: use at least actor of physics volume
 			CachedBaseCharacterOwner->GetOwner()
 		);
+	}
+}
+void UCharacterAttributeComponents::OnRep_Health()
+{
+	OnHealthChanged();
+}
+
+void UCharacterAttributeComponents::OnHealthChanged()
+{
+	if (Health <= 0.0f)
+	{
+		if (OnDeathEvent.IsBound())
+		{
+			OnDeathEvent.Broadcast();
+		}
 	}
 }
 
@@ -120,15 +147,7 @@ void UCharacterAttributeComponents::OnTakeAnyDamage(AActor* DamagedActor, float 
 	
 	UE_LOG(LogDamage, Warning, TEXT("UCharacterAttributeComponents::OnTakeAnyDamage %s recevied %.2f amount of damage from %s"), *CachedBaseCharacterOwner->GetName(), Damage, *DamageCauser->GetName());
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-
-	if (Health <= 0.0f)
-	{
-		UE_LOG(LogDamage, Warning, TEXT("UCharacterAttributeComponents::OnTakeAnyDamage character %s is killed by an actor %s"), *CachedBaseCharacterOwner->GetName(), *DamageCauser->GetName());
-		if (OnDeathEvent.IsBound())
-		{
-			OnDeathEvent.Broadcast();
-		}
-	}
+	OnHealthChanged();
 }
 
 

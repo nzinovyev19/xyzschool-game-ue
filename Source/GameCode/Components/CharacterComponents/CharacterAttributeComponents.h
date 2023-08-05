@@ -16,6 +16,8 @@ class GAMECODE_API UCharacterAttributeComponents : public UActorComponent
 
 public:	
 	UCharacterAttributeComponents();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -66,7 +68,13 @@ protected:
 	float DamageFromOutOfOxygenVelocity = 2.0f;
 	
 private:
+	UPROPERTY(ReplicatedUsing=OnRep_Health)
 	float Health = 0.0f;
+
+	UFUNCTION()
+	void OnRep_Health();
+
+	void OnHealthChanged();
 
 	float Stamina = 0.0f;
 

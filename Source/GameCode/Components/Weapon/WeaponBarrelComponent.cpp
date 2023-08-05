@@ -162,7 +162,7 @@ void UWeaponBarrelComponent::ProcessHit(const FHitResult& HitResult, const FVect
 	AActor* HitActor = HitResult.GetActor();
 	ATurret* TurretActor = Cast<ATurret>(HitActor);
 	
-	if (IsValid(HitActor))
+	if (GetOwner()->HasAuthority() && IsValid(HitActor))
 	{
 		FPointDamageEvent DamageEvent;
 		DamageEvent.HitInfo = HitResult;
