@@ -159,7 +159,7 @@ void UWeaponBarrelComponent::BeginPlay()
 	{
 		AGCProjectile* Projectile = GetWorld()->SpawnActor<AGCProjectile>(ProjectileClass, ProjectilePoolLocation, FRotator::ZeroRotator);
 		Projectile->SetOwner(GetOwningPawn());
-		Projectile->SetProjectileActive(true);	
+		Projectile->SetProjectileActive(false);	
 		ProjectilePool.Add(Projectile);
 	}
 }
