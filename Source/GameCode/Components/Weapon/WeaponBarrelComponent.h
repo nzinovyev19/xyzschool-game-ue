@@ -50,6 +50,7 @@ struct FShotInfo
 	FVector GetDirection() const { return Direction; }
 };
 
+class AGCProjectile;
 class UNiagaraSystem;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GAMECODE_API UWeaponBarrelComponent : public USceneComponent
@@ -71,6 +72,8 @@ public:
 	void Shot(FVector ShotStart, FVector ShotDirection, float SpreadAngle);
 
 protected:
+	virtual void BeginPlay() override;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes")
 	float FiringRange = 5000.0f;
 
@@ -79,6 +82,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes | Hit registration")
 	EHitRegistrationType HitRegistration = EHitRegistrationType::HitScan;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes | Hit registration", meta = (UIMin = 1, ClampMin = 1, EditCondition = "HitRegistration == EHitRegistrationType::Projectile"))
+	int32 ProjectilePoolSize = 10;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes | Hit registration", meta = (EditCondition = "HitRegistration == EHitRegistrationType::Projectile"))
 	TSubclassOf<class AGCProjectile> ProjectileClass ;
@@ -124,6 +130,12 @@ private:
 	UPROPERTY(ReplicatedUsing=OnRep_LastShotsInfo)
 	TArray<FShotInfo> LastShotsInfo;
 
+	UPROPERTY(Replicated)
+	TArray<AGCProjectile*> ProjectilePool;
+
+	UPROPERTY(Replicated)
+	int32 CurrentProjectileIndex;
+
 	UFUNCTION()
 	void OnRep_LastShotsInfo();
 	
@@ -131,6 +143,9 @@ private:
 
 	APawn* GetOwningPawn() const;
 	AController* GetController() const;
+
+	UFUNCTION()
+	void ProcessProjectileHit(AGCProjectile* Projectile, const FHitResult& HitResult, const FVector& Direction);
 
 	UFUNCTION()
 	void ProcessHit(const FHitResult& HitResult, const FVector& Direction);
@@ -143,4 +158,6 @@ private:
 	void LaunchProjectile(const FVector& LaunchStart, const FVector& LaunchDirection);
 	
 	FVector GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const;
+
+	const FVector ProjectilePoolLocation = FVector(0.0f, 0.0f, -100.0f);
 };

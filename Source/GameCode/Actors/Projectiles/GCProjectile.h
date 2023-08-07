@@ -6,7 +6,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GCProjectile.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnProjectileHit, const FHitResult&, Hit, const FVector&, Direction);
+class AGCProjectile;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnProjectileHit, AGCProjectile*, Projectile, const FHitResult&, Hit, const FVector&, Direction);
 
 UCLASS()
 class GAMECODE_API AGCProjectile : public AActor
@@ -21,6 +22,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnProjectileHit OnProjectileHit;
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SetProjectileActive(bool bIsProjectileActive);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

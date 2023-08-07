@@ -24,6 +24,8 @@ void UWeaponBarrelComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	RepParams.Condition = COND_SimulatedOnly;
 	RepParams.RepNotifyCondition = REPNOTIFY_Always;
 	DOREPLIFETIME_WITH_PARAMS(UWeaponBarrelComponent, LastShotsInfo, RepParams);
+	DOREPLIFETIME(UWeaponBarrelComponent, ProjectilePool);
+	DOREPLIFETIME(UWeaponBarrelComponent, CurrentProjectileIndex);
 }
 
 void UWeaponBarrelComponent::ShotInternal(const TArray<FShotInfo>& ShotsInfo)
@@ -68,7 +70,10 @@ void UWeaponBarrelComponent::ShotInternal(const TArray<FShotInfo>& ShotsInfo)
 		}
 
 		UNiagaraComponent* TraceFXComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, MuzzleLocation, GetComponentRotation());
-		TraceFXComponent->SetVectorParameter(FXParamTraceEnd, ShotEnd);
+		if (IsValid(TraceFXComponent))
+		{
+			TraceFXComponent->SetVectorParameter(FXParamTraceEnd, ShotEnd);
+		}
 		
 		if (bIsDebugEnabled)
 		{
@@ -134,6 +139,41 @@ void UWeaponBarrelComponent::Shot(FVector ShotStart, FVector ShotDirection, floa
 	ShotInternal(ShotsInfo);
 }
 
+void UWeaponBarrelComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (GetOwnerRole() < ROLE_Authority)
+	{
+		return;
+	}
+
+	if (!IsValid(ProjectileClass))
+	{
+		return;
+	}
+
+	ProjectilePool.Reserve(ProjectilePoolSize);
+
+	for (int32 i = 0; i < ProjectilePoolSize; ++i)
+	{
+		AGCProjectile* Projectile = GetWorld()->SpawnActor<AGCProjectile>(ProjectileClass, ProjectilePoolLocation, FRotator::ZeroRotator);
+		Projectile->SetOwner(GetOwningPawn());
+		Projectile->SetProjectileActive(true);	
+		ProjectilePool.Add(Projectile);
+	}
+}
+
+void UWeaponBarrelComponent::ProcessProjectileHit(AGCProjectile* Projectile, const FHitResult& HitResult,
+	const FVector& Direction)
+{
+	Projectile->SetProjectileActive(false);
+	Projectile->SetActorLocation(ProjectilePoolLocation);
+	Projectile->SetActorRotation(FRotator::ZeroRotator);
+	Projectile->OnProjectileHit.RemoveAll(this);
+	ProcessHit(HitResult, Direction);
+}
+
 APawn* UWeaponBarrelComponent::GetOwningPawn() const
 {
 	APawn* PawnOwner = Cast<APawn>(GetOwner());
@@ -158,6 +198,7 @@ void UWeaponBarrelComponent::ProcessHit(const FHitResult& HitResult, const FVect
 		DecalComponent->SetFadeScreenSize(0.0001f);
 		DecalComponent->SetFadeOut(DefaultDecalInfo.DecalLifeTime, DefaultDecalInfo.DecalFadeOutTime);
 	}
+	
 	
 	AActor* HitActor = HitResult.GetActor();
 	ATurret* TurretActor = Cast<ATurret>(HitActor);
@@ -192,13 +233,17 @@ bool UWeaponBarrelComponent::HitScan(FVector ShotStart, OUT FVector& ShotEnd, FV
 
 void UWeaponBarrelComponent::LaunchProjectile(const FVector& LaunchStart, const FVector& LaunchDirection)
 {
-	AGCProjectile* Projectile = GetWorld()->SpawnActor<AGCProjectile>(ProjectileClass, LaunchStart, LaunchDirection.ToOrientationRotator());
+	AGCProjectile* Projectile = ProjectilePool[CurrentProjectileIndex];
 
-	if (IsValid(Projectile))
+	Projectile->SetActorLocation(LaunchStart);
+	Projectile->SetActorRotation(LaunchDirection.ToOrientationRotator());
+	Projectile->SetProjectileActive(true);
+	Projectile->OnProjectileHit.AddDynamic(this, &UWeaponBarrelComponent::ProcessProjectileHit);
+	Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
+	++CurrentProjectileIndex;
+	if (CurrentProjectileIndex == ProjectilePool.Num())
 	{
-		Projectile->SetOwner(GetOwningPawn());
-		Projectile->OnProjectileHit.AddDynamic(this, &UWeaponBarrelComponent::ProcessHit);
-		Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
+		CurrentProjectileIndex = 0;
 	}
 }
 
