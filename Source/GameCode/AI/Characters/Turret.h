@@ -20,16 +20,21 @@ class GAMECODE_API ATurret : public APawn
 
 public:
 	ATurret();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void PossessedBy(AController* NewController) override;
 
-	void SetCurrentTarget(AActor* NewTarget);
+	void OnCurrentTargetSet();
 
 	virtual FVector GetPawnViewLocation() const override;
 
 	virtual FRotator GetViewRotation() const override;
+
+	UPROPERTY(ReplicatedUsing=OnRep_CurrentTarget)
+	AActor* CurrentTarget = nullptr;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -72,8 +77,8 @@ private:
 	void SetCurrentTurretState(ETurretState NewState);
 	ETurretState CurrentTurretState = ETurretState::Searching;
 
-	UPROPERTY()
-	AActor* CurrentTarget = nullptr;
+	UFUNCTION()
+	void OnRep_CurrentTarget();
 
 	void MakeShot();
 

@@ -7,16 +7,14 @@
 #include "GameCode/GameCodeTypes.h"
 #include "CharacterEquipmentComponent.generated.h"
 
-typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
-typedef TArray<int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmmunitionArray;
-
+class AEquipableItem;
+class ARangeWeaponItem;
+class AThrowableItem;
+class AMeleeWeaponItem;
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCurrentWeaponAmmoChanged, int32, int32);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentThrowableCountChanged, int32);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnEquippedItemChanged, const AEquipableItem*);
 
-class ARangeWeaponItem;
-class AThrowableItem;
-class AMeleeWeaponItem;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GAMECODE_API UCharacterEquipmentComponent : public UActorComponent
 {
