@@ -8,7 +8,20 @@ public class GameCode : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "Niagara", "GameplayTasks", "NavigationSystem" });
+		PublicDependencyModuleNames.AddRange(new string[] { 
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"UMG", 
+			"Niagara", 
+			"GameplayTasks", 
+			"NavigationSystem",
+			"OnlineSubsystem",
+			"OnlineSubsystemUtils"
+		});
+		
+		DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 
