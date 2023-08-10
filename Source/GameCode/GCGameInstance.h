@@ -7,9 +7,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "GCGameInstance.generated.h"
 
-/**
- * 
- */
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchFound, bool)
 UCLASS()
 class GAMECODE_API UGCGameInstance : public UGameInstance
 {
@@ -21,6 +19,8 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	virtual bool ProcessConsoleExec(const TCHAR* Cmd, FOutputDevice& Ar, UObject* Executor) override;
+
+	FOnMatchFound OnMatchFound;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
