@@ -32,7 +32,7 @@ Implement third person shooter with realizing in parallel the such mechanics as:
     - [ ] Service of fire
 - [ ] Network and replication
   - [x] Base replication with platforms
-  - [ ] Replication of character props
+  - [x] Replication of character props
   - [ ] Online-sessions
 - [ ] Interaction with objects and inventory
 - [ ] Save system, loading and streaming levels
