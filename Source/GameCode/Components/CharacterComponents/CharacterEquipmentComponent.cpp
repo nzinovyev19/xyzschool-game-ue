@@ -179,7 +179,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 
 	if (GetOwner()->GetLocalRole() == ROLE_AutonomousProxy)
 	{
-		Server_EquipItemInSlot(CurrentEquippedSlot);
+		Server_EquipItemInSlot(Slot);
 	}
 }
 
