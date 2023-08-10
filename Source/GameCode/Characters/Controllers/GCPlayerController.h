@@ -25,6 +25,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<class UPlayerHUDWidget> PlayerHUDWidgetClass;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<class UUserWidget> MainMenuWidgetClass;
+	
 	virtual void SetupInputComponent() override;
 
 private:
@@ -68,6 +71,8 @@ private:
 	void PrimaryMeleeAttack();
 	void SecondaryMeleeAttack();
 
+	void ToggleMainMenu();
+
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 private:
@@ -75,6 +80,9 @@ private:
 	
 	UPROPERTY(VisibleDefaultsOnly)
 	UPlayerHUDWidget* PlayerHUDWidget = nullptr;
+
+	UPROPERTY(VisibleDefaultsOnly)
+	UUserWidget* MainMenuWidget = nullptr;
 	
 	bool bIgnoreCameraPitch = false;
 };
