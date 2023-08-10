@@ -17,6 +17,8 @@ UGCGameInstance::UGCGameInstance()
 	OnFindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(this, &UGCGameInstance::OnFindSessionsComplete);
 
 	OnJoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(this, &UGCGameInstance::OnJoinSessionComplete);
+
+	OnDestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(this, &UGCGameInstance::OnDestroySessionComplete);
 }
 
 void UGCGameInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -42,8 +44,22 @@ bool UGCGameInstance::ProcessConsoleExec(const TCHAR* Cmd, FOutputDevice& Ar, UO
 	return bResult;
 }
 
+void UGCGameInstance::Init()
+{
+	Super::Init();
+	OnNetworkFailureEventHandle = GEngine->NetworkFailureEvent.AddUFunction(this, "OnNetworkFailure");
+	OnTravelFailureEventHandle = GEngine->TravelFailureEvent.AddUFunction(this, "OnTravelFailure");
+}
+
+void UGCGameInstance::Shutdown()
+{
+	GEngine->NetworkFailureEvent.Remove(OnNetworkFailureEventHandle);
+	GEngine->TravelFailureEvent.Remove(OnTravelFailureEventHandle);
+	Super::Shutdown();
+}
+
 bool UGCGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN,
-	bool bIsPresence, int32 MaxNumPlayers)
+                                  bool bIsPresence, int32 MaxNumPlayers)
 {
 	// Get the Online Subsystem to work with
 	IOnlineSubsystem* const OnlineSub = IOnlineSubsystem::Get();
@@ -295,6 +311,42 @@ void UGCGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCom
 			}
 		}
 	}
+}
+
+void UGCGameInstance::OnDestroySessionComplete(FName SessionName, bool bWasSuccessful)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnDestroySessionComplete %s, %d"), *SessionName.ToString(), bWasSuccessful));
+
+	// Get the OnlineSubsystem we want to work with
+	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
+	if (OnlineSub)
+	{
+		// Get the SessionInterface from the OnlineSubsystem
+		IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();
+
+		if (Sessions.IsValid())
+		{
+			// Clear the Delegate
+			Sessions->ClearOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegateHandle);
+
+			// If it was successful, we just load another level (could be a MainMenu!)
+			if (bWasSuccessful)
+			{
+				UGameplayStatics::OpenLevel(GetWorld(), MainMenuMapName, true);
+			}
+		}
+	}
+}
+
+void UGCGameInstance::OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType,
+	const FString& ErrorMessage)
+{
+	DisplayNetworkErrorMessage(ErrorMessage);
+}
+
+void UGCGameInstance::OnTravelFailure(UWorld* World, ENetworkFailure::Type FailureType, const FString& ErrorMessage)
+{
+	DisplayNetworkErrorMessage(ErrorMessage);
 }
 
 void UGCGameInstance::DisplayNetworkErrorMessage(FString ErrorMessage)

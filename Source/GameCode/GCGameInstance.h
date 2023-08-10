@@ -22,12 +22,16 @@ public:
 
 	FOnMatchFound OnMatchFound;
 
+	virtual void Init() override;
+
+	virtual void Shutdown() override;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName LobbyMapName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FName MainMenuName;
+	FName MainMenuMapName;
 
 protected:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Server settings")
