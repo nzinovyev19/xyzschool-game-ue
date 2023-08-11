@@ -123,8 +123,13 @@ void UCharacterEquipmentComponent::AttachCurrentItemToEquippedSocket()
 	}
 }
 
-bool UCharacterEquipmentComponent::IsReadyToEquip(AEquipableItem* Item)
+bool UCharacterEquipmentComponent::IsReadyToEquip(EEquipmentSlots Slot)
 {
+	if (ItemsArray.Num() <= 0)
+	{
+		return false;
+	}
+	AEquipableItem* Item = ItemsArray[(uint32)Slot];
 	CurrentThrowableItem = Cast<AThrowableItem>(Item);
 	if (IsValid(CurrentThrowableItem) && AmmunitionArray[(uint32)CurrentThrowableItem->GetAmmoType()] == 0)
 	{
@@ -135,7 +140,7 @@ bool UCharacterEquipmentComponent::IsReadyToEquip(AEquipableItem* Item)
 
 void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 {
-	if (bIsEquipping || !IsReadyToEquip(ItemsArray[(uint32)Slot]))
+	if (bIsEquipping || !IsReadyToEquip(Slot))
 	{
 		return;
 	}
@@ -244,7 +249,7 @@ void UCharacterEquipmentComponent::BeginPlay()
 	
 	checkf(GetOwner()->IsA<AGCBaseCharacter>(), TEXT("UCharacterEquipmentComponent::BeginPlay() CharacterEquipmentComponent can be used only with a BaseCharacter"));
 	CachedBaseCharacter = StaticCast<AGCBaseCharacter*>(GetOwner());
-	
+
 	CreateLoadout();
 	AutoEquip();
 	OnCurrentThrowableCountChanged();

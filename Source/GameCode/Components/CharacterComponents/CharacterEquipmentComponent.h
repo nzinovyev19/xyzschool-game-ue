@@ -118,7 +118,7 @@ private:
 	UFUNCTION()
 	void OnRep_CurrentEquippedSlot(EEquipmentSlots CurrentEquippedSlot_Old);
 	
-	bool IsReadyToEquip(AEquipableItem* Item);
+	bool IsReadyToEquip(EEquipmentSlots Slot);
 
 	FTimerHandle EquipTimer;
 	
