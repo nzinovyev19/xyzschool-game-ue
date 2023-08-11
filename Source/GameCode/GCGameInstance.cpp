@@ -58,6 +58,13 @@ void UGCGameInstance::Shutdown()
 	Super::Shutdown();
 }
 
+void UGCGameInstance::LaunchLobby(uint32 MaxPlayers_In, FName ServerName_In, bool bIsLan)
+{
+	MaxPlayers = MaxPlayers_In;
+	ServerName = ServerName_In;
+	HostSession(GetPrimaryPlayerUniqueId(), ServerName, bIsLan, true, MaxPlayers);
+}
+
 bool UGCGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN,
                                   bool bIsPresence, int32 MaxNumPlayers)
 {

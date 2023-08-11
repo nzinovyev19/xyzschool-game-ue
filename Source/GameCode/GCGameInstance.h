@@ -26,6 +26,8 @@ public:
 
 	virtual void Shutdown() override;
 
+	void LaunchLobby(uint32 MaxPlayers_In, FName ServerName_In, bool bIsLan);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName LobbyMapName;
