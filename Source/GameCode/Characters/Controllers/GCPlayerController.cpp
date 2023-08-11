@@ -299,7 +299,7 @@ void AGCPlayerController::SecondaryMeleeAttack()
 
 void AGCPlayerController::ToggleMainMenu()
 {
-	if (!IsValid(MainMenuWidget) || !IsValid(PlayerHUDWidget))
+	if (!IsValid(MainMenuWidget))
 	{
 		return;
 	}
@@ -307,7 +307,7 @@ void AGCPlayerController::ToggleMainMenu()
 	{
 		MainMenuWidget->RemoveFromParent();
 		PlayerHUDWidget->AddToViewport();
-		SetInputMode(FInputModeGameOnly {});
+		SetInputMode(FInputModeGameOnly { });
 		SetPause(false);
 		bShowMouseCursor = false;
 	}
@@ -332,7 +332,7 @@ void AGCPlayerController::CreateAndInitializeWidgets()
 		}	
 	}
 
-	if (!IsValid(MainMenuWidgetClass))
+	if (!IsValid(MainMenuWidget))
 	{
 		MainMenuWidget = CreateWidget<UUserWidget>(GetWorld(), MainMenuWidgetClass);
 	}
