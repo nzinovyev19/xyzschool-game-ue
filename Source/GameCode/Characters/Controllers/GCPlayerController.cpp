@@ -355,4 +355,7 @@ void AGCPlayerController::CreateAndInitializeWidgets()
 			CharacterEquipmentComponent->OnCurrentThrowableCountChangedEvent.AddUFunction(AmmoWidget, FName("UpdateGrenadeCount"));
 		}
 	}
+
+	SetInputMode(FInputModeGameOnly { });
+	bShowMouseCursor = false;
 }
