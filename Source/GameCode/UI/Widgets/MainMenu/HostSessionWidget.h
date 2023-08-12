@@ -18,6 +18,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,	Category = "Network session")
 	FName ServerName;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void CreateSession();
 };
