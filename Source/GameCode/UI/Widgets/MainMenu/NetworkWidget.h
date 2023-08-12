@@ -28,5 +28,5 @@ protected:
 	void ToggleNetworkType();
 
 	UFUNCTION(BlueprintCallable)
-	void CloseWidget();
+	virtual void CloseWidget();
 };

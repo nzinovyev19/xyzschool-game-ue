@@ -28,6 +28,10 @@ public:
 
 	void LaunchLobby(uint32 MaxPlayers_In, FName ServerName_In, bool bIsLan);
 
+	void FindAMatch(bool bIsLAN);
+
+	void JoinOnlineGame();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName LobbyMapName;

@@ -65,6 +65,39 @@ void UGCGameInstance::LaunchLobby(uint32 MaxPlayers_In, FName ServerName_In, boo
 	HostSession(GetPrimaryPlayerUniqueId(), ServerName, bIsLan, true, MaxPlayers);
 }
 
+void UGCGameInstance::FindAMatch(bool bIsLAN)
+{
+	FindSessions(GetPrimaryPlayerUniqueId(), bIsLAN, true);
+}
+
+void UGCGameInstance::JoinOnlineGame()
+{
+	// Just a SearchResult where we can save the one we want to use, for the case we find more than one!
+	FOnlineSessionSearchResult SearchResult;
+
+	TSharedPtr<const FUniqueNetId> PlayerUniqueNetId = GetPrimaryPlayerUniqueId();
+
+	if (SessionSearch->SearchResults.Num() > 0)
+	{
+		for (int32 i = 0; i < SessionSearch->SearchResults.Num(); i++)
+		{
+			// To avoid something crazy, we filter sessions from ourself
+			if (SessionSearch->SearchResults[i].Session.OwningUserId != PlayerUniqueNetId)
+			{
+				SearchResult = SessionSearch->SearchResults[i];
+
+				// Once we found sounce a Session that is not ours, just join it. Instead of using a for loop, you could
+				// use a widget where you click on and have a reference for the GameSession it represents which you can use
+				if (!JoinFoundOnlineSession(PlayerUniqueNetId, GameSessionName, SearchResult))
+				{
+					DisplayNetworkErrorMessage("Failed to join a session! Please try again!");
+				}
+				break;
+			}
+		}
+	}
+}
+
 bool UGCGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN,
                                   bool bIsPresence, int32 MaxNumPlayers)
 {
