@@ -30,10 +30,10 @@ Implement third person shooter with realizing in parallel the such mechanics as:
     - [ ] "Ping-pong" patrolling
   - [x] Behavior tree
     - [ ] Service of fire
-- [ ] Network and replication
+- [x] Network and replication
   - [x] Base replication with platforms
   - [x] Replication of character props
-  - [ ] Online-sessions
+  - [x] Online-sessions
 - [ ] Interaction with objects and inventory
 - [ ] Save system, loading and streaming levels
 - [ ] Optimizations in UE4
