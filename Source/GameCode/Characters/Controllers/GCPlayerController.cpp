@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
 #include "GameCode/UI/Widgets/PlayerHUDWidget.h"
+#include "GameCode/GameCodeTypes.h"
 
 void AGCPlayerController::SetPawn(APawn* InPawn)
 {
@@ -59,7 +60,7 @@ void AGCPlayerController::SetupInputComponent()
 	InputComponent->BindAction("SwitchFireMode", EInputEvent::IE_Pressed, this, &AGCPlayerController::SwitchWeaponMode);
 	InputComponent->BindAction("PrimaryMeleeAttack", EInputEvent::IE_Pressed, this, &AGCPlayerController::PrimaryMeleeAttack);
 	InputComponent->BindAction("SecondaryMeleeAttack", EInputEvent::IE_Pressed, this, &AGCPlayerController::SecondaryMeleeAttack);
-	InputComponent->BindAction("Interact", EInputEvent::IE_Pressed, this, &AGCPlayerController::Interact);
+	InputComponent->BindAction(ActionInteract, EInputEvent::IE_Pressed, this, &AGCPlayerController::Interact);
 	
 	FInputActionBinding& ToggleMenuBinding = InputComponent->BindAction("ToggleMainMenu", EInputEvent::IE_Pressed, this, &AGCPlayerController::ToggleMainMenu);
 	ToggleMenuBinding.bExecuteWhenPaused = true;
