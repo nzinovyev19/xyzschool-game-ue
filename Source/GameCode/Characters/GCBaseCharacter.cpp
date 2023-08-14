@@ -18,6 +18,7 @@
 #include "GameCode/Components/CharacterComponents/CharacterAttributeComponents.h"
 #include "GameCode/Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "GameCode/Actors/Equipment/Weapons/RangeWeaponItem.h"
+#include "GameCode/Actors/Interactive/Interface/Interactive.h"
 #include "GameCode/AI/Controllers/AITurretController.h"
 #include "GameFramework/PhysicsVolume.h"
 #include "Net/UnrealNetwork.h"
@@ -329,6 +330,14 @@ bool AGCBaseCharacter::IsSwimmingUnderWater() const
 	return true;
 }
 
+void AGCBaseCharacter::Interact()
+{
+	if (LineOfSightObject.GetInterface())
+	{
+		LineOfSightObject->Interact(this);
+	}
+}
+
 FGenericTeamId AGCBaseCharacter::GetGenericTeamId() const
 {
 	return FGenericTeamId((uint8)Team);
@@ -521,6 +530,7 @@ void AGCBaseCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	// UpdateIKSettings(DeltaTime);
 	TryChangeSprintState(DeltaTime);
+	TraceLineOfSight();
 }
 
 UCharacterEquipmentComponent* AGCBaseCharacter::GetCharacterEquipmentComponent_Mutable() const
@@ -569,6 +579,39 @@ void AGCBaseCharacter::OnHardLanded()
 void AGCBaseCharacter::OnOutOfStamina(bool IsOutOfStamina)
 {
 	GCBaseCharacterMovementComponent->SetIsOutOfStamina(IsOutOfStamina);
+}
+
+void AGCBaseCharacter::TraceLineOfSight()
+{
+	if (!IsPlayerControlled())
+	{
+		return;
+	}
+
+	FVector ViewLocation;
+	FRotator ViewRotation;
+
+	APlayerController* PlayerController = GetController<APlayerController>();
+	PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
+
+	FVector ViewDirection = ViewRotation.Vector();
+	FVector TraceEnd = ViewLocation + ViewDirection * LineOfSightDistance;
+
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility);
+	if (LineOfSightObject.GetObject() != HitResult.Actor)
+	{
+		LineOfSightObject = HitResult.Actor.Get();
+		FName ActionName;
+		if (LineOfSightObject.GetInterface())
+		{
+			ActionName = LineOfSightObject->GetActionEventName();
+		}
+		else
+		{
+			ActionName = NAME_None;
+		}
+	}
 }
 
 void AGCBaseCharacter::TryChangeSprintState(float DeltaTime)

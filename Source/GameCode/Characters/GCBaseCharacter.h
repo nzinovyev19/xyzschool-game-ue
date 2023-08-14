@@ -9,6 +9,8 @@
 #include "GameFramework/Character.h"
 #include "GCBaseCharacter.generated.h"
 
+class IInteractable;
+
 USTRUCT(BlueprintType)
 struct FMantlingSettings
 {
@@ -174,6 +176,8 @@ public:
 	
 	bool IsSwimmingUnderWater() const;
 
+	void Interact();
+
 	/* IGenericTeamAgentInterface */
 	virtual FGenericTeamId GetGenericTeamId() const override;
 	/* ~IGenericTeamAgentInterface */
@@ -260,6 +264,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
 	ETeams Team = ETeams::Enemy;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Sight")
+	float LineOfSightDistance = 500.0f;
+
+	void TraceLineOfSight();
+
+	UPROPERTY()
+	TScriptInterface<IInteractable> LineOfSightObject;
 	
 private:
 	void TryChangeSprintState(float DeltaTime);

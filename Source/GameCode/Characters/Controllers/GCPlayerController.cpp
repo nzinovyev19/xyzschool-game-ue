@@ -59,6 +59,7 @@ void AGCPlayerController::SetupInputComponent()
 	InputComponent->BindAction("SwitchFireMode", EInputEvent::IE_Pressed, this, &AGCPlayerController::SwitchWeaponMode);
 	InputComponent->BindAction("PrimaryMeleeAttack", EInputEvent::IE_Pressed, this, &AGCPlayerController::PrimaryMeleeAttack);
 	InputComponent->BindAction("SecondaryMeleeAttack", EInputEvent::IE_Pressed, this, &AGCPlayerController::SecondaryMeleeAttack);
+	InputComponent->BindAction("Interact", EInputEvent::IE_Pressed, this, &AGCPlayerController::Interact);
 	
 	FInputActionBinding& ToggleMenuBinding = InputComponent->BindAction("ToggleMainMenu", EInputEvent::IE_Pressed, this, &AGCPlayerController::ToggleMainMenu);
 	ToggleMenuBinding.bExecuteWhenPaused = true;
@@ -318,6 +319,14 @@ void AGCPlayerController::ToggleMainMenu()
 		SetInputMode(FInputModeGameAndUI { });
 		SetPause(true);
 		bShowMouseCursor = true;
+	}
+}
+
+void AGCPlayerController::Interact()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->Interact();
 	}
 }
 

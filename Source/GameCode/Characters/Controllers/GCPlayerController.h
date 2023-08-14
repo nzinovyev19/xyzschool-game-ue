@@ -73,6 +73,8 @@ private:
 
 	void ToggleMainMenu();
 
+	void Interact();
+
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 private:
