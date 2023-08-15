@@ -31,13 +31,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interactive | Door")
 	USceneComponent* DoorPivot;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interactive | Door")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interactive | Door")
 	float AngleClosed = 0.0f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interactive | Door")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interactive | Door")
 	float AngleOpened = 90.0f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interactive | Door")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interactive | Door")
 	UCurveFloat* DoorAnimationCurve;
 
 private:
