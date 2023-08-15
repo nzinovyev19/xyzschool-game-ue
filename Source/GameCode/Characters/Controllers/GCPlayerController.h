@@ -78,6 +78,7 @@ private:
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 private:
+	void OnInteractableObjectFound(FName ActionName);
 	void CreateAndInitializeWidgets();
 	
 	UPROPERTY(VisibleDefaultsOnly)

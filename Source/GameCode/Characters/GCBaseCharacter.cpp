@@ -45,6 +45,15 @@ void AGCBaseCharacter::BeginPlay()
 
 }
 
+void AGCBaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (OnInteractableObjectFound.IsBound())
+	{
+		OnInteractableObjectFound.Unbind();
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 void AGCBaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -611,6 +620,7 @@ void AGCBaseCharacter::TraceLineOfSight()
 		{
 			ActionName = NAME_None;
 		}
+		OnInteractableObjectFound.ExecuteIfBound(ActionName);
 	}
 }
 

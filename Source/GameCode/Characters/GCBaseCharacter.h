@@ -9,6 +9,8 @@
 #include "GameFramework/Character.h"
 #include "GCBaseCharacter.generated.h"
 
+DECLARE_DELEGATE_OneParam(FOnInteractableObjectFound, FName);
+
 class IInteractable;
 
 USTRUCT(BlueprintType)
@@ -58,6 +60,8 @@ class GAMECODE_API AGCBaseCharacter : public ACharacter, public IGenericTeamAgen
 public:
 	AGCBaseCharacter(const FObjectInitializer& ObjectInitializer);
 	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override; 
 
@@ -177,6 +181,8 @@ public:
 	bool IsSwimmingUnderWater() const;
 
 	void Interact();
+
+	FOnInteractableObjectFound OnInteractableObjectFound;
 
 	/* IGenericTeamAgentInterface */
 	virtual FGenericTeamId GetGenericTeamId() const override;

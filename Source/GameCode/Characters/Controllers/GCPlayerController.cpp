@@ -7,14 +7,16 @@
 #include "GameCode/Characters/GCBaseCharacter.h"
 #include "GameCode/UI/Widgets/PlayerHUDWidget.h"
 #include "GameCode/GameCodeTypes.h"
+#include "GameFramework/PlayerInput.h"
 
 void AGCPlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
 	CachedBaseCharacter = Cast<AGCBaseCharacter>(InPawn);
-	if (IsLocalController())
+	if (CachedBaseCharacter.IsValid() && IsLocalController())
 	{
 		CreateAndInitializeWidgets();
+		CachedBaseCharacter->OnInteractableObjectFound.BindUObject(this, &AGCPlayerController::OnInteractableObjectFound);
 	}
 }
 
@@ -329,6 +331,23 @@ void AGCPlayerController::Interact()
 	{
 		CachedBaseCharacter->Interact();
 	}
+}
+
+void AGCPlayerController::OnInteractableObjectFound(FName ActionName)
+{
+	if (!IsValid(PlayerHUDWidget))
+	{
+		return;
+	}
+
+	TArray<FInputActionKeyMapping> ActionKeys = PlayerInput->GetKeysForAction(ActionName);
+	const bool HasAnyKeys = ActionKeys.Num() != 0;
+	if (HasAnyKeys)
+	{
+		FName ActionKey = ActionKeys[0].Key.GetFName();
+		PlayerHUDWidget->SetHighlightInteractableActionText(ActionKey);
+	}
+	PlayerHUDWidget->SetHighlightInteractableVisibility(HasAnyKeys);	
 }
 
 void AGCPlayerController::CreateAndInitializeWidgets()

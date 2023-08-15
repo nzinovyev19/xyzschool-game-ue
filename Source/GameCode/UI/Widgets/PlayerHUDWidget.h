@@ -9,9 +9,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUDWidget.generated.h"
 
-/**
- * 
- */
+class UHighlightInteractable;
 UCLASS()
 class GAMECODE_API UPlayerHUDWidget : public UUserWidget
 {
@@ -24,6 +22,10 @@ public:
 
 	UCharacterAttributesWidget* GetCharacterAttributesWidget();
 
+	void SetHighlightInteractableVisibility(bool bIsVisible);
+
+	void SetHighlightInteractableActionText(FName KeyName);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName ReticleWidgetName;
@@ -33,4 +35,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName CharacterAttributesWidgetName;
+
+	UPROPERTY(meta = (BindWidget))
+	UHighlightInteractable* InteractableKey;
 };
