@@ -17,6 +17,7 @@ void AGCAICharacterController::SetPawn(APawn* InPawn)
 		checkf(InPawn->IsA<AGCAICharacter>(), TEXT("AGCAICharacterController::SetPawn AICharacterController can posses only GCAICharacter"));
 		CachedAICharacter = StaticCast<AGCAICharacter*>(InPawn);
 		RunBehaviorTree(CachedAICharacter->GetBehaviorTree());
+		SetupPatrolling();
 	}
 	else
 	{
@@ -74,9 +75,8 @@ bool AGCAICharacterController::IsTargetReached(FVector TargetLocation) const
 	return (TargetLocation - CachedAICharacter->GetActorLocation()).SizeSquared() <= FMath::Square(TargetReachRadius);
 }
 
-void AGCAICharacterController::BeginPlay()
+void AGCAICharacterController::SetupPatrolling()
 {
-	Super::BeginPlay();
 	UAIPatrollingComponent* PatrollingComponent = CachedAICharacter->GetPatrollingComponent();
 	if (PatrollingComponent->CanPatrol())
 	{

@@ -19,15 +19,14 @@ public:
 
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 
-protected:
-	virtual void BeginPlay() override;
-
+protected: 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
 	float TargetReachRadius = 100.0f;
 	
 private:
 	void TryMoveToNextTarget();
 	bool IsTargetReached(FVector TargetLocation) const;
+	void SetupPatrolling();
 	bool bIsPatrolling = false;
 	
 	TWeakObjectPtr<AGCAICharacter> CachedAICharacter;
