@@ -7,6 +7,7 @@
 #include "AICharacterSpawner.generated.h"
 
 class AGCAICharacter;
+class IInteractable;
 UCLASS()
 class GAMECODE_API AAICharacterSpawner : public AActor
 {
@@ -19,6 +20,7 @@ public:
 	void SpawnAi();
 
 protected:
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -31,7 +33,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Spawner")
 	bool bDoOnce = false;
 
+	// An Actor implementing IInteractable interface
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Spawner")
+	AActor* SpawnTriggerActor;
+
 private:
 	bool bCanSpawn = true;
+
+	void UnsubscribeFromTrigger();
+
+	UPROPERTY()
+	TScriptInterface<IInteractable> SpawnTrigger;
+
+	FDelegateHandle TriggerHandle;
 
 };
