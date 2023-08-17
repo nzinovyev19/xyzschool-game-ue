@@ -6,6 +6,7 @@
 #include "Curves/CurveVector.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameCode/Actors/Interactive/InteractiveActor.h"
 #include "GameCode/Components/LedgeDetectorComponent.h"
@@ -20,6 +21,7 @@
 #include "GameCode/Actors/Equipment/Weapons/RangeWeaponItem.h"
 #include "GameCode/Actors/Interactive/Interface/Interactive.h"
 #include "GameCode/AI/Controllers/AITurretController.h"
+#include "GameCode/UI/Widgets/World/GCAttributeProgressBar.h"
 #include "GameFramework/PhysicsVolume.h"
 #include "Net/UnrealNetwork.h"
 
@@ -35,6 +37,9 @@ AGCBaseCharacter::AGCBaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	CharacterAttributeComponents = CreateDefaultSubobject<UCharacterAttributeComponents>(TEXT("CharacterAttributes"));
 	CharacterEquipmentComponent = CreateDefaultSubobject<UCharacterEquipmentComponent>(TEXT("CharacterEquipment"));
+
+	HealthBarProgressComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarProgressComponent"));
+	HealthBarProgressComponent->SetupAttachment(GetCapsuleComponent());
 }
 
 void AGCBaseCharacter::BeginPlay()
@@ -42,7 +47,7 @@ void AGCBaseCharacter::BeginPlay()
 	Super::BeginPlay();
 	CharacterAttributeComponents->OnDeathEvent.AddUObject(this, &AGCBaseCharacter::OnDeath);
 	CharacterAttributeComponents->OnOutOfStaminaEventSignature.AddUObject(this, &AGCBaseCharacter::OnOutOfStamina);
-
+	InitializeHealthProgress();
 }
 
 void AGCBaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -345,6 +350,26 @@ void AGCBaseCharacter::Interact()
 	{
 		LineOfSightObject->Interact(this);
 	}
+}
+
+void AGCBaseCharacter::InitializeHealthProgress()
+{
+	UGCAttributeProgressBar* Widget = Cast<UGCAttributeProgressBar>(HealthBarProgressComponent->GetUserWidgetObject());
+	if (!IsValid(Widget))
+	{
+		HealthBarProgressComponent->SetVisibility(false);
+		return;
+	}
+
+	if (IsPlayerControlled() && IsLocallyControlled())
+	{
+		HealthBarProgressComponent->SetVisibility(false);
+		return;
+	}
+
+	CharacterAttributeComponents->OnHealthChangedEvent.AddUObject(Widget, &UGCAttributeProgressBar::SetProgressPercentage);
+	CharacterAttributeComponents->OnDeathEvent.AddLambda([=]() { HealthBarProgressComponent->SetVisibility(false); });
+	Widget->SetProgressPercentage(CharacterAttributeComponents->GetHealthPercent());
 }
 
 FGenericTeamId AGCBaseCharacter::GetGenericTeamId() const

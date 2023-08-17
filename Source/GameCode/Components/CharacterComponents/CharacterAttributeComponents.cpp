@@ -102,6 +102,10 @@ void UCharacterAttributeComponents::OnRep_Health()
 
 void UCharacterAttributeComponents::OnHealthChanged()
 {
+	if (OnHealthChangedEvent.IsBound())
+	{
+		OnHealthChangedEvent.Broadcast(GetHealthPercent());
+	}
 	if (Health <= 0.0f)
 	{
 		if (OnDeathEvent.IsBound())

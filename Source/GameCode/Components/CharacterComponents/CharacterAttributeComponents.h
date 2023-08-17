@@ -8,6 +8,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnDeathEventSignature);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnOutOfStaminaEventSignature, bool);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GAMECODE_API UCharacterAttributeComponents : public UActorComponent
@@ -22,6 +23,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	FOnDeathEventSignature OnDeathEvent;
+
+	FOnHealthChanged OnHealthChangedEvent;
 
 	FOnOutOfStaminaEventSignature OnOutOfStaminaEventSignature;
 

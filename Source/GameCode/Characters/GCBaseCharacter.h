@@ -12,6 +12,7 @@
 DECLARE_DELEGATE_OneParam(FOnInteractableObjectFound, FName);
 
 class IInteractable;
+class UWidgetComponent;
 
 USTRUCT(BlueprintType)
 struct FMantlingSettings
@@ -181,6 +182,11 @@ public:
 	bool IsSwimmingUnderWater() const;
 
 	void Interact();
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Character | Components")
+	UWidgetComponent* HealthBarProgressComponent;
+
+	void InitializeHealthProgress();
 
 	FOnInteractableObjectFound OnInteractableObjectFound;
 
