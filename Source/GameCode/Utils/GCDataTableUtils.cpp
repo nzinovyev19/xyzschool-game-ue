@@ -3,7 +3,7 @@
 #include "GameCode/Inventory/Items/InventoryItem.h"
 
 
-FWeaponTableRow* GCDataTableUtils::FindWeaponData(FName WeaponID)
+FWeaponTableRow* GCDataTableUtils::FindWeaponData(const FName WeaponID)
 {
 	static const FString ContextString(TEXT("Find Weapon Data"));
 
@@ -15,4 +15,18 @@ FWeaponTableRow* GCDataTableUtils::FindWeaponData(FName WeaponID)
 	}
 	
 	return WeaponDataTable->FindRow<FWeaponTableRow>(WeaponID, ContextString);
+}
+
+FItemTableRow* GCDataTableUtils::FindInventoryItemData(const FName ItemId)
+{
+	static const FString ContextString(TEXT("Find Item Data"));
+
+	UDataTable* InventoryItemDataTable = LoadObject<UDataTable>(nullptr, TEXT("/Game/GameCode/Core/Data/DataTables/DT_InventoryItemList.DT_InventoryItemList"));
+
+	if (InventoryItemDataTable == nullptr)
+	{
+		return nullptr;
+	}
+	
+	return InventoryItemDataTable->FindRow<FItemTableRow>(ItemId, ContextString);
 }
