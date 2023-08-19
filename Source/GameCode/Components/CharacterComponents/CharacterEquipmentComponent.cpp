@@ -252,6 +252,10 @@ void UCharacterEquipmentComponent::AddEquipmentItem(const TSubclassOf<AEquipable
 	}
 
 	AmmunitionArray[(uint32)RangeWeaponObject->GetAmmoType()] += RangeWeaponObject->GetMaxAmmo();
+	if (IsValid(CurrentEquippedWeapon))
+	{
+		OnCurrentWeaponAmmoChanged(CurrentEquippedWeapon->GetAmmo());
+	}
 }
 
 void UCharacterEquipmentComponent::BeginPlay()

@@ -7,7 +7,7 @@ FWeaponTableRow* GCDataTableUtils::FindWeaponData(FName WeaponID)
 {
 	static const FString ContextString(TEXT("Find Weapon Data"));
 
-	UDataTable* WeaponDataTable = LoadObject<UDataTable>(nullptr, TEXT("/GameCode/Core/Data/DataTables/DT_WeaponList.DT_WeaponList"));
+	UDataTable* WeaponDataTable = LoadObject<UDataTable>(nullptr, TEXT("/Game/GameCode/Core/Data/DataTables/DT_WeaponList.DT_WeaponList"));
 
 	if (WeaponDataTable == nullptr)
 	{
