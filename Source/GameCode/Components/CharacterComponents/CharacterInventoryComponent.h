@@ -5,6 +5,7 @@
 #include "CharacterInventoryComponent.generated.h"
 
 class UInventoryItem;
+class UInventoryViewWidget;
 
 USTRUCT(BlueprintType)
 struct FInventorySlot
@@ -39,7 +40,7 @@ public:
 
 	void OpenViewInventory(APlayerController* Controller);
 	void CloseViewInventory();
-	void IsViewVisible() const;
+	bool IsViewVisible() const;
 
 	int32 GetCapacity() const;
 	bool HasFreeSlot() const;
@@ -59,7 +60,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "View settings")
 	TSubclassOf<UInventoryViewWidget> InventoryViewWidgetClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory settings")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory settings", meta = (ClampMin = 1, UIMin = 1))
 	int32 Capacity = 16;
 
 	void CreateViewWidget(APlayerController* Controller);
