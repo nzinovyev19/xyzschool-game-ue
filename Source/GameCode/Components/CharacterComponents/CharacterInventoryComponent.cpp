@@ -134,7 +134,7 @@ void UCharacterInventoryComponent::CreateViewWidget(APlayerController* Controlle
 	}
 
 	InventoryViewWidget = CreateWidget<UInventoryViewWidget>(Controller, InventoryViewWidgetClass);
-	InventoryViewWidget->InitializeViewWidget(&InventorySlots);
+	InventoryViewWidget->InitializeViewWidget(InventorySlots);
 }
 
 FInventorySlot* UCharacterInventoryComponent::FindItemSlot(FName ItemID)
