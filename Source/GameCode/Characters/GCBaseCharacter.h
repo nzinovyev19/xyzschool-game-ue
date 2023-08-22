@@ -192,6 +192,9 @@ public:
 
 	FOnInteractableObjectFound OnInteractableObjectFound;
 
+	bool PickupItem(TWeakObjectPtr<class UInventoryItem> ItemToPickup);
+	void UseInventory(APlayerController* PlayerController);
+
 	/* IGenericTeamAgentInterface */
 	virtual FGenericTeamId GetGenericTeamId() const override;
 	/* ~IGenericTeamAgentInterface */
@@ -248,6 +251,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Components")
 	class UCharacterAttributeComponents* CharacterAttributeComponents;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Components")
+	class UCharacterEquipmentComponent* CharacterEquipmentComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Components")
+	class UCharacterInventoryComponent* CharacterInventoryComponent;
+
 	virtual void OnDeath();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Animations")
@@ -269,9 +278,6 @@ protected:
 	virtual void OnHardLanded();
 
 	virtual void OnOutOfStamina(bool IsOutOfStamina);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Components")
-	class UCharacterEquipmentComponent* CharacterEquipmentComponent;
 	
 	virtual void OnStartAimingInternal();
 	virtual void OnStopAimingInternal();

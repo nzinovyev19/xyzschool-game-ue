@@ -21,6 +21,7 @@
 #include "GameCode/Actors/Equipment/Weapons/RangeWeaponItem.h"
 #include "GameCode/Actors/Interactive/Interface/Interactive.h"
 #include "GameCode/AI/Controllers/AITurretController.h"
+#include "GameCode/Components/CharacterComponents/CharacterInventoryComponent.h"
 #include "GameCode/UI/Widgets/World/GCAttributeProgressBar.h"
 #include "GameFramework/PhysicsVolume.h"
 #include "Net/UnrealNetwork.h"
@@ -37,6 +38,7 @@ AGCBaseCharacter::AGCBaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	CharacterAttributeComponents = CreateDefaultSubobject<UCharacterAttributeComponents>(TEXT("CharacterAttributes"));
 	CharacterEquipmentComponent = CreateDefaultSubobject<UCharacterEquipmentComponent>(TEXT("CharacterEquipment"));
+	CharacterInventoryComponent = CreateDefaultSubobject<UCharacterInventoryComponent>(TEXT("CharacterInventory"));
 
 	HealthBarProgressComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarProgressComponent"));
 	HealthBarProgressComponent->SetupAttachment(GetCapsuleComponent());
@@ -338,7 +340,6 @@ bool AGCBaseCharacter::IsSwimmingUnderWater() const
 		FVector VolumeTopPlane = Volume->GetBounds().Origin + Volume->GetBounds().BoxExtent;
 		
 		return HeadPosition.Z > VolumeTopPlane.Z;
-
 	}
 
 	return true;
@@ -375,6 +376,38 @@ void AGCBaseCharacter::InitializeHealthProgress()
 	CharacterAttributeComponents->OnHealthChangedEvent.AddUObject(Widget, &UGCAttributeProgressBar::SetProgressPercentage);
 	CharacterAttributeComponents->OnDeathEvent.AddLambda([=]() { HealthBarProgressComponent->SetVisibility(false); });
 	Widget->SetProgressPercentage(CharacterAttributeComponents->GetHealthPercent());
+}
+
+bool AGCBaseCharacter::PickupItem(TWeakObjectPtr<UInventoryItem> ItemToPickup)
+{
+	bool Result = false;
+	if (CharacterInventoryComponent->HasFreeSlot())
+	{
+		CharacterInventoryComponent->AddItem(ItemToPickup, 1);
+	}
+}
+
+void AGCBaseCharacter::UseInventory(APlayerController* PlayerController)
+{
+	if (!IsPlayerControlled())
+	{
+		return;
+	}
+
+	APlayerController* PlayerController = GetController<APlayerController>();
+
+	if (!CharacterInventoryComponent->IsViewVisible())
+	{
+		CharacterInventoryComponent->OpenViewInventory(PlayerController);
+		PlayerController->SetInputMode(FInputModeGameAndUI{});
+		PlayerController->bShowMouseCursor = true;
+	}
+	else
+	{
+		CharacterInventoryComponent->CloseViewInventory();
+		PlayerController->SetInputMode(FInputModeGameOnly{});
+		PlayerController->bShowMouseCursor = false;
+	}
 }
 
 FGenericTeamId AGCBaseCharacter::GetGenericTeamId() const
