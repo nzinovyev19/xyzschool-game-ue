@@ -4,13 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "PickableItem.h"
-#include "PickableItem.h"
 #include "PickablePowerups.generated.h"
 
-/**
- * 
- */
-UCLASS()
+UCLASS(Blueprintable)
 class GAMECODE_API APickablePowerups : public APickableItem
 {
 	GENERATED_BODY()
