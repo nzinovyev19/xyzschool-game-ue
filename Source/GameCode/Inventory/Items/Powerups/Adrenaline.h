@@ -13,5 +13,7 @@ UCLASS()
 class GAMECODE_API UAdrenaline : public UInventoryItem
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual bool Consume(AGCBaseCharacter* ConsumeTarget) override;
 };

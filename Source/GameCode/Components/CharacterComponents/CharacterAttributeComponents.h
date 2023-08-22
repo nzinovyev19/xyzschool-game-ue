@@ -36,6 +36,9 @@ public:
 	
 	float GetOxygenPercent() const;
 
+	void AddHealth(float HealthToAdd);
+	void RestoreStamina();
+
 protected:
 	virtual void BeginPlay() override;
 

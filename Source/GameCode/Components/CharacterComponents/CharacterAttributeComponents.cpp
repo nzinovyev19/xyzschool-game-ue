@@ -45,6 +45,17 @@ float UCharacterAttributeComponents::GetOxygenPercent() const
 	return Oxygen / MaxOxygen;
 }
 
+void UCharacterAttributeComponents::AddHealth(float Value)
+{
+	Health = FMath::Clamp(Health + Value, 0.0f, MaxHealth);
+	OnHealthChanged();
+}
+
+void UCharacterAttributeComponents::RestoreStamina()
+{
+	Stamina = MaxStamina;
+}
+
 void UCharacterAttributeComponents::BeginPlay()
 {
 	Super::BeginPlay();

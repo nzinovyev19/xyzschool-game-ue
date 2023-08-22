@@ -194,6 +194,8 @@ public:
 
 	bool PickupItem(TWeakObjectPtr<class UInventoryItem> ItemToPickup);
 	void UseInventory(APlayerController* PlayerController);
+	void RestoreFullStamina();
+	void AddHealth(float Value);
 
 	/* IGenericTeamAgentInterface */
 	virtual FGenericTeamId GetGenericTeamId() const override;

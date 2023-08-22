@@ -9,6 +9,7 @@ class AGCBaseCharacter;
 class AEquipableItem;
 class APickableItem;
 class UInventoryItem;
+
 USTRUCT(BlueprintType)
 struct FInventoryItemDescription : public FTableRowBase
 {

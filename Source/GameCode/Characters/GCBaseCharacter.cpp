@@ -380,11 +380,7 @@ void AGCBaseCharacter::InitializeHealthProgress()
 
 bool AGCBaseCharacter::PickupItem(TWeakObjectPtr<UInventoryItem> ItemToPickup)
 {
-	bool Result = false;
-	if (CharacterInventoryComponent->HasFreeSlot())
-	{
-		CharacterInventoryComponent->AddItem(ItemToPickup, 1);
-	}
+	return CharacterInventoryComponent->AddItem(ItemToPickup, 1);
 }
 
 void AGCBaseCharacter::UseInventory(APlayerController* PlayerController)
@@ -393,9 +389,7 @@ void AGCBaseCharacter::UseInventory(APlayerController* PlayerController)
 	{
 		return;
 	}
-
-	APlayerController* PlayerController = GetController<APlayerController>();
-
+	
 	if (!CharacterInventoryComponent->IsViewVisible())
 	{
 		CharacterInventoryComponent->OpenViewInventory(PlayerController);
@@ -408,6 +402,16 @@ void AGCBaseCharacter::UseInventory(APlayerController* PlayerController)
 		PlayerController->SetInputMode(FInputModeGameOnly{});
 		PlayerController->bShowMouseCursor = false;
 	}
+}
+
+void AGCBaseCharacter::RestoreFullStamina()
+{
+	CharacterAttributeComponents->RestoreStamina();
+}
+
+void AGCBaseCharacter::AddHealth(float Value)
+{
+	CharacterAttributeComponents->AddHealth(Value);
 }
 
 FGenericTeamId AGCBaseCharacter::GetGenericTeamId() const
