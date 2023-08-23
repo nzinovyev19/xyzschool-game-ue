@@ -75,6 +75,8 @@ private:
 
 	void Interact();
 
+	void UseInventory();
+
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 private:

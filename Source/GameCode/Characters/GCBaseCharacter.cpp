@@ -385,7 +385,7 @@ bool AGCBaseCharacter::PickupItem(TWeakObjectPtr<UInventoryItem> ItemToPickup)
 
 void AGCBaseCharacter::UseInventory(APlayerController* PlayerController)
 {
-	if (!IsPlayerControlled())
+	if (!IsValid(PlayerController))
 	{
 		return;
 	}

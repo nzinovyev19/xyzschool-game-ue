@@ -17,7 +17,7 @@ FWeaponTableRow* GCDataTableUtils::FindWeaponData(const FName WeaponID)
 	return WeaponDataTable->FindRow<FWeaponTableRow>(WeaponID, ContextString);
 }
 
-FItemTableRow* GCDataTableUtils::FindInventoryItemData(const FName ItemId)
+FItemTableRow* GCDataTableUtils::FindInventoryItemData(const FName ItemID)
 {
 	static const FString ContextString(TEXT("Find Item Data"));
 
@@ -28,5 +28,5 @@ FItemTableRow* GCDataTableUtils::FindInventoryItemData(const FName ItemId)
 		return nullptr;
 	}
 	
-	return InventoryItemDataTable->FindRow<FItemTableRow>(ItemId, ContextString);
+	return InventoryItemDataTable->FindRow<FItemTableRow>(ItemID, ContextString);
 }
