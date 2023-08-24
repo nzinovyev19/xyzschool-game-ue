@@ -44,7 +44,7 @@ void UCharacterInventoryComponent::OpenViewInventory(APlayerController* Controll
 
 void UCharacterInventoryComponent::CloseViewInventory()
 {
-	if (!InventoryViewWidget->IsVisible())
+	if (InventoryViewWidget->IsVisible())
 	{
 		InventoryViewWidget->RemoveFromParent();
 	}
