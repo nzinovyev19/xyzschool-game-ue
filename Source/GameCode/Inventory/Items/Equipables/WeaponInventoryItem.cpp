@@ -13,7 +13,7 @@ void UWeaponInventoryItem::SetEquipWeaponClass(TSubclassOf<AEquipableItem>& Weap
 	EquipWeaponClass = WeaponClass;
 }
 
-TSubclassOf<AEquipableItem> UWeaponInventoryItem::GetEquipWeaponClass()
+TSubclassOf<AEquipableItem> UWeaponInventoryItem::GetEquipWeaponClass() const
 {
 	return EquipWeaponClass;
 }

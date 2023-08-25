@@ -112,7 +112,7 @@ void UInventorySlotWidget::NativeOnDragCancelled(const FDragDropEvent& InDragDro
 	LinkedSlot->UpdateSlotState();
 }
 
-// void UInventorySlotWidget::SetItemIcon(UTexture2D* Icon)
-// {
-// 	ImageItemIcon->SetBrushFromTexture(Icon);
-// }
+void UInventorySlotWidget::SetItemIcon(UTexture2D* Icon)
+{
+	ImageItemIcon->SetBrushFromTexture(Icon);
+}

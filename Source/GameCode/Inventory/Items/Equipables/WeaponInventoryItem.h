@@ -17,7 +17,7 @@ public:
 	
 	void SetEquipWeaponClass(TSubclassOf<AEquipableItem>& WeaponClass);
 
-	TSubclassOf<AEquipableItem> GetEquipWeaponClass();
+	TSubclassOf<AEquipableItem> GetEquipWeaponClass() const;
 	
 protected:
 	TSubclassOf<AEquipableItem> EquipWeaponClass;
