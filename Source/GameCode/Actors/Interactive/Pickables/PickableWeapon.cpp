@@ -4,6 +4,7 @@
 #include "GameCode/GameCodeTypes.h"
 #include "GameCode/Characters/GCBaseCharacter.h"
 #include "GameCode/Inventory/Items/InventoryItem.h"
+#include "GameCode/Inventory/Items/Equipables/WeaponInventoryItem.h"
 #include "GameCode/Utils/GCDataTableUtils.h"
 
 APickableWeapon::APickableWeapon()
@@ -17,7 +18,10 @@ void APickableWeapon::Interact(AGCBaseCharacter* Character)
 	FWeaponTableRow* WeaponRow = GCDataTableUtils::FindWeaponData(DataTableID);
 	if (WeaponRow)
 	{
-		Character->AddEquipmentItem(WeaponRow->EquipableActor);
+		TWeakObjectPtr<UWeaponInventoryItem> Weapon = NewObject<UWeaponInventoryItem>(Character);
+		Weapon->Initialize(DataTableID, WeaponRow->WeaponItemDescription);
+		Weapon->SetEquipWeaponClass(WeaponRow->EquipableActor);
+		Character->PickupItem(Weapon);
 		Destroy();
 	}
 }

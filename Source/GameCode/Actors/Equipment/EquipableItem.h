@@ -35,6 +35,8 @@ public:
 
 	virtual EReticleType GetReticleType() const;
 
+	FName GetDataTableID() const;
+
 protected:
 	UPROPERTY(BlueprintAssignable)
 	FOnEquipmentStateChanged OnEquipmentStateChanged;

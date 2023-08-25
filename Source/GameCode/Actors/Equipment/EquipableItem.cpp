@@ -69,3 +69,8 @@ EReticleType AEquipableItem::GetReticleType() const
 {
 	return ReticleType;
 }
+
+FName AEquipableItem::GetDataTableID() const
+{
+	return DataTableID;
+}
