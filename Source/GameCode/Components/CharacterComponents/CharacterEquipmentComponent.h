@@ -7,6 +7,7 @@
 #include "GameCode/GameCodeTypes.h"
 #include "CharacterEquipmentComponent.generated.h"
 
+class UEquipmentViewWidget;
 class AEquipableItem;
 class ARangeWeaponItem;
 class AThrowableItem;
@@ -49,7 +50,14 @@ public:
 
 	void LaunchCurrentThrowableItem();
 
-	void AddEquipmentItem(const TSubclassOf<AEquipableItem> EquipableItemClass);
+	bool AddEquipmentItemToSlot(const TSubclassOf<AEquipableItem> EquipableItemClass, int32 SlotIndex);
+	void RemoveItemFromSlot(int32 SlotIndex);
+
+	void OpenViewEquipment(APlayerController* PlayerController);
+	void CloseViewEquipment();
+	bool IsViewVisible();
+
+	const TArray<AEquipableItem*>& GetItems() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -64,6 +72,11 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Loadout")
 	EEquipmentSlots AutoEquipItemIsSlot = EEquipmentSlots::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "View")
+	TSubclassOf<UEquipmentViewWidget> ViewWidgetClass;
+
+	void CreateViewWidget(APlayerController* PlayerController);
 
 private:
 	UFUNCTION(Server, Reliable)
@@ -125,4 +138,6 @@ private:
 	FTimerHandle EquipTimer;
 	
 	TWeakObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
+
+	UEquipmentViewWidget* ViewWidget;
 }; 

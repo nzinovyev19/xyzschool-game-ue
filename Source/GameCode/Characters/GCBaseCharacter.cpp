@@ -355,7 +355,7 @@ void AGCBaseCharacter::Interact()
 
 void AGCBaseCharacter::AddEquipmentItem(const TSubclassOf<AEquipableItem> EquipableItemClass)
 {
-	CharacterEquipmentComponent->AddEquipmentItem(EquipableItemClass);
+	CharacterEquipmentComponent->AddEquipmentItemToSlot(EquipableItemClass, TODO);
 }
 
 void AGCBaseCharacter::InitializeHealthProgress()
@@ -393,12 +393,14 @@ void AGCBaseCharacter::UseInventory(APlayerController* PlayerController)
 	if (!CharacterInventoryComponent->IsViewVisible())
 	{
 		CharacterInventoryComponent->OpenViewInventory(PlayerController);
+		CharacterEquipmentComponent->OpenViewEquipment(PlayerController);
 		PlayerController->SetInputMode(FInputModeGameAndUI{});
 		PlayerController->bShowMouseCursor = true;
 	}
 	else
 	{
 		CharacterInventoryComponent->CloseViewInventory();
+		CharacterEquipmentComponent->CloseViewEquipment();
 		PlayerController->SetInputMode(FInputModeGameOnly{});
 		PlayerController->bShowMouseCursor = false;
 	}

@@ -74,3 +74,8 @@ FName AEquipableItem::GetDataTableID() const
 {
 	return DataTableID;
 }
+
+bool AEquipableItem::IsSlotCompatible(EEquipmentSlots Slot)
+{
+	return CompatibleEquipmentSlots.Contains(Slot);
+}
