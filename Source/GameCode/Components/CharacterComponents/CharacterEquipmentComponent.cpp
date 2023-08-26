@@ -261,7 +261,7 @@ bool UCharacterEquipmentComponent::AddEquipmentItemToSlot(const TSubclassOf<AEqu
 	if (!IsValid(ItemsArray[SlotIndex]))
 	{
 		AEquipableItem* Item = GetWorld()->SpawnActor<AEquipableItem>(EquipableItemClass);
-		Item->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, Item->CachedBaseCharacter());
+		Item->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, Item->GetEquippedSocketName());
 		Item->SetOwner(CachedBaseCharacter.Get());
 		Item->UnEquip();
 		ItemsArray[SlotIndex] = Item;

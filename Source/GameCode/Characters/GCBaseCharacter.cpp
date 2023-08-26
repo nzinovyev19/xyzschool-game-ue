@@ -353,11 +353,6 @@ void AGCBaseCharacter::Interact()
 	}
 }
 
-void AGCBaseCharacter::AddEquipmentItem(const TSubclassOf<AEquipableItem> EquipableItemClass)
-{
-	CharacterEquipmentComponent->AddEquipmentItemToSlot(EquipableItemClass, TODO);
-}
-
 void AGCBaseCharacter::InitializeHealthProgress()
 {
 	UGCAttributeProgressBar* Widget = Cast<UGCAttributeProgressBar>(HealthBarProgressComponent->GetUserWidgetObject());
