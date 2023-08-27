@@ -3,6 +3,7 @@
 
 #include "WeaponWheelWidget.h"
 
+#include "Blueprint/WidgetTree.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "GameCode/Actors/Equipment/EquipableItem.h"
@@ -49,6 +50,26 @@ void UWeaponWheelWidget::NativeConstruct()
 	{
 		BackgroundMaterial = RadialBackground->GetDynamicMaterial();
 		BackgroundMaterial->SetScalarParameterValue(FName("Segments"), EquipmentSlotsSegments.Num());
+	}
+
+	for (int i = 0; i < EquipmentSlotsSegments.Num(); i++)
+	{
+		FName WidgetName = FName(FString::Printf(TEXT("ImageSegment%i"), i));
+		UImage* WeaponImage = WidgetTree->FindWidget<UImage>(WidgetName);
+		if (!IsValid(WeaponImage))
+		{
+			continue;
+		}
+
+		FWeaponTableRow* WeaponData = GetTableRowForSegment(i);
+		if (WeaponData == nullptr)
+		{
+			WeaponImage->SetOpacity(0.0f);
+		} else
+		{
+			WeaponImage->SetOpacity(1.0f);
+			WeaponImage->SetBrushFromTexture(WeaponData->WeaponItemDescription.Icon);
+		}
 	}
 }
 
