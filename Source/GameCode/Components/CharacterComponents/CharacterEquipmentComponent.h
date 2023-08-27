@@ -7,6 +7,7 @@
 #include "GameCode/GameCodeTypes.h"
 #include "CharacterEquipmentComponent.generated.h"
 
+class UWeaponWheelWidget;
 class UEquipmentViewWidget;
 class AEquipableItem;
 class ARangeWeaponItem;
@@ -57,6 +58,10 @@ public:
 	void CloseViewEquipment();
 	bool IsViewVisible();
 
+	void OpenWeaponWheel(APlayerController* PlayerController);
+	bool IsSelectingWeapon() const;
+	void ConfirmWeaponSelection() const;
+
 	const TArray<AEquipableItem*>& GetItems() const;
 
 protected:
@@ -76,7 +81,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "View")
 	TSubclassOf<UEquipmentViewWidget> ViewWidgetClass;
 
-	void CreateViewWidget(APlayerController* PlayerController);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "View")
+	TSubclassOf<UWeaponWheelWidget> WeaponWheelWidgetClass;
+
+	void CreateEquipmentWidgets(APlayerController* PlayerController);
 
 private:
 	UFUNCTION(Server, Reliable)
@@ -140,4 +148,5 @@ private:
 	TWeakObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 	UEquipmentViewWidget* ViewWidget;
+	UWeaponWheelWidget* WeaponWheelWidget;
 }; 
