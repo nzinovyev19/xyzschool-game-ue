@@ -77,6 +77,8 @@ private:
 
 	void UseInventory();
 
+	void ConfirmWeaponWheelSelection();
+
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 private:

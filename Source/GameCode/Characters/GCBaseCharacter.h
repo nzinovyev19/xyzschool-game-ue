@@ -182,9 +182,7 @@ public:
 	bool IsSwimmingUnderWater() const;
 
 	void Interact();
-
-	void AddEquipmentItem(const TSubclassOf<AEquipableItem> EquipableItemClass);
-
+	
 	UPROPERTY(VisibleDefaultsOnly, Category = "Character | Components")
 	UWidgetComponent* HealthBarProgressComponent;
 
@@ -196,6 +194,8 @@ public:
 	void UseInventory(APlayerController* PlayerController);
 	void RestoreFullStamina();
 	void AddHealth(float Value);
+
+	void ConfirmWeaponWheelSelection();
 
 	/* IGenericTeamAgentInterface */
 	virtual FGenericTeamId GetGenericTeamId() const override;

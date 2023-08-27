@@ -411,6 +411,14 @@ void AGCBaseCharacter::AddHealth(float Value)
 	CharacterAttributeComponents->AddHealth(Value);
 }
 
+void AGCBaseCharacter::ConfirmWeaponWheelSelection()
+{
+	if (CharacterEquipmentComponent->IsSelectingWeapon())
+	{
+		CharacterEquipmentComponent->ConfirmWeaponSelection();
+	}
+}
+
 FGenericTeamId AGCBaseCharacter::GetGenericTeamId() const
 {
 	return FGenericTeamId((uint8)Team);
@@ -456,6 +464,10 @@ void AGCBaseCharacter::StopSprint()
 
 void AGCBaseCharacter::StartFire()
 {
+	if (CharacterEquipmentComponent->IsSelectingWeapon())
+	{
+		return;
+	}
 	if (CharacterEquipmentComponent->IsEquipping())
 	{
 		return;
