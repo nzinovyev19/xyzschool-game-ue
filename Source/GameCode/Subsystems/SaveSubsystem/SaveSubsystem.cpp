@@ -104,7 +104,7 @@ void USaveSubsystem::SerializeLevel(const ULevel* Level, const ULevelStreaming* 
 	UE_LOG(LogSaveSubsystem, Display, TEXT("USaveSubsystem::SerializeLevel(): %s, Level: %s, StreamingLevel: %s"), *GetNameSafe(this), *GetNameSafe(Level), *GetNameSafe(StreamingLevel));
 
 	FLevelSaveData* LevelSaveData = nullptr;
-	LevelSaveData = &GameSaveData.Level;
+	LevelSaveData = &GameSaveData.PersistentLevel;
 	// if (IsValid(StreamingLevel))
 	// {
 	// 	TArray<FLevelSaveData>& StreamingLevles = GameSaveData.StreamingLevels;
@@ -157,7 +157,7 @@ void USaveSubsystem::DeserializeLevel(ULevel* Level, const ULevelStreaming* Stre
 	UE_LOG(LogSaveSubsystem, Display, TEXT("USaveSubsystem::DeserializeLevel(): %s, Level: %s, StreamingLevel: %s"), *GetNameSafe(this), *GetNameSafe(Level), *GetNameSafe(StreamingLevel));
 
 	FLevelSaveData* LevelSaveData = nullptr;
-	LevelSaveData = &GameSaveData.Level;
+	LevelSaveData = &GameSaveData.PersistentLevel;
 	// if (IsValid(StreamingLevel))
 	// {
 	// 	const FName LevelName = StreamingLevel->GetWorldAssetPackageFName();

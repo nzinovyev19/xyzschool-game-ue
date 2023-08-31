@@ -79,6 +79,9 @@ private:
 
 	void ConfirmWeaponWheelSelection();
 
+	void QuickSaveGame();
+	void QuickLoadGame();
+
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
 
 private:
