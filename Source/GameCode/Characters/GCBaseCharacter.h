@@ -6,6 +6,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "GameCode/Components/CharacterComponents/CharacterAttributeComponents.h"
 #include "GameCode/Components/CharacterComponents/CharacterEquipmentComponent.h"
+#include "GameCode/Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
 #include "GameFramework/Character.h"
 #include "GCBaseCharacter.generated.h"
 
@@ -54,7 +55,7 @@ class UCharacterEquipmentComponent;
 class UGCBaseCharacterMovementComponent;
 
 UCLASS(abstract, NotBlueprintable)
-class GAMECODE_API AGCBaseCharacter : public ACharacter, public IGenericTeamAgentInterface
+class GAMECODE_API AGCBaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
@@ -63,6 +64,10 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	//@ ISaveSubsystemInterface
+	virtual void OnLevelDeserialized_Implementation() override;
+	//~ ISaveSubsystemInterface
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override; 
 
