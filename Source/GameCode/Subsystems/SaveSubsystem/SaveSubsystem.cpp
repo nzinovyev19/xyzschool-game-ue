@@ -130,19 +130,19 @@ void USaveSubsystem::SerializeLevel(const ULevel* Level, const ULevelStreaming* 
 		FActorSaveData& ActorSaveData = ActorsSaveData[ActorsSaveData.AddUnique(FActorSaveData(Actor))];
 		ActorSaveData.Transform = Actor->GetTransform();
 
-		// TArray<FObjectSaveData>& ComponentsSaveData = ActorSaveData.ComponentsSaveData;
-		// ComponentsSaveData.Empty();
+		TArray<FObjectSaveData>& ComponentsSaveData = ActorSaveData.ComponentsSaveData;
+		ComponentsSaveData.Empty();
 		
-		// for (UActorComponent* ActorComponent : Actor->GetComponents())
-		// {
-		// 	if (ActorComponent->Implements<USaveSubsystemInterface>())
-		// 	{
-		// 		FObjectSaveData& ComponentSaveData = ComponentsSaveData[ComponentsSaveData.Emplace(ActorComponent)];
-		// 		FMemoryWriter MemoryWriter(ComponentSaveData.RawData, true);
-		// 		FSaveSubsystemArchive Archive(MemoryWriter, false);
-		// 		ActorComponent->Serialize(Archive);
-		// 	}
-		// }
+		for (UActorComponent* ActorComponent : Actor->GetComponents())
+		{
+			if (ActorComponent->Implements<USaveSubsystemInterface>())
+			{
+				FObjectSaveData& ComponentSaveData = ComponentsSaveData[ComponentsSaveData.Emplace(ActorComponent)];
+				FMemoryWriter MemoryWriter(ComponentSaveData.RawData, true);
+				FSaveSubsystemArchive Archive(MemoryWriter, false);
+				ActorComponent->Serialize(Archive);
+			}
+		}
 
 		FMemoryWriter MemoryWriter(ActorSaveData.RawData, true);
 		FSaveSubsystemArchive Archive(MemoryWriter, false);
@@ -454,17 +454,17 @@ void USaveSubsystem::DeserializeActor(AActor* Actor, const FActorSaveData* Actor
 
 	Actor->SetActorTransform(ActorSaveData->Transform);
 
-	// const TArray<FObjectSaveData>& ComponentsSaveData = ActorSaveData->ComponentsSaveData;
-	// for (UActorComponent* ActorComponent : Actor->GetComponents())
-	// {
-	// 	if (ActorComponent->Implements<USaveSubsystemInterface>())
-	// 	{
-	// 		const FObjectSaveData* ComponentSaveData = ComponentsSaveData.FindByPredicate([=](const FObjectSaveData& SaveData) { return SaveData.Name == ActorComponent->GetFName(); });
-	// 		FMemoryReader MemoryReader(ComponentSaveData->RawData, true);
-	// 		FSaveSubsystemArchive Archive(MemoryReader, false);
-	// 		ActorComponent->Serialize(Archive);
-	// 	}
-	// }
+	const TArray<FObjectSaveData>& ComponentsSaveData = ActorSaveData->ComponentsSaveData;
+	for (UActorComponent* ActorComponent : Actor->GetComponents())
+	{
+		if (ActorComponent->Implements<USaveSubsystemInterface>())
+		{
+			const FObjectSaveData* ComponentSaveData = ComponentsSaveData.FindByPredicate([=](const FObjectSaveData& SaveData) { return SaveData.Name == ActorComponent->GetFName(); });
+			FMemoryReader MemoryReader(ComponentSaveData->RawData, true);
+			FSaveSubsystemArchive Archive(MemoryReader, false);
+			ActorComponent->Serialize(Archive);
+		}
+	}
 
 	FMemoryReader MemoryReader(ActorSaveData->RawData, true);
 	FSaveSubsystemArchive Archive(MemoryReader, false);

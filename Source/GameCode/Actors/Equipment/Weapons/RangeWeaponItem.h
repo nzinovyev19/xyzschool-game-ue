@@ -18,7 +18,7 @@ enum class EReloadType : uint8
 
 class UAnimMontage;
 UCLASS(Blueprintable)
-class GAMECODE_API ARangeWeaponItem : public  AEquipableItem
+class GAMECODE_API ARangeWeaponItem : public  AEquipableItem, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
@@ -58,14 +58,16 @@ public:
 	FOnReloadComplete OnReloadComplete;
 
 	virtual EReticleType GetReticleType() const override;
-
+	
+	virtual void OnLevelDeserialized_Implementation() override;
+	
 protected:
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", SaveGame)
 	UWeaponBarrelComponent* WeaponBarrel;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

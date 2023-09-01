@@ -139,6 +139,10 @@ void UWeaponBarrelComponent::Shot(FVector ShotStart, FVector ShotDirection, floa
 	ShotInternal(ShotsInfo);
 }
 
+void UWeaponBarrelComponent::OnLevelDeserialized_Implementation()
+{
+}
+
 void UWeaponBarrelComponent::BeginPlay()
 {
 	Super::BeginPlay();

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
 #include "GameCode/GameCodeTypes.h"
+#include "GameCode/Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
 #include "WeaponBarrelComponent.generated.h"
 
 UENUM(BlueprintType)
@@ -53,7 +54,7 @@ struct FShotInfo
 class AGCProjectile;
 class UNiagaraSystem;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class GAMECODE_API UWeaponBarrelComponent : public USceneComponent
+class GAMECODE_API UWeaponBarrelComponent : public USceneComponent, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
@@ -70,6 +71,8 @@ public:
 	bool GetAutoReload() const;
 	
 	void Shot(FVector ShotStart, FVector ShotDirection, float SpreadAngle);
+
+	virtual void OnLevelDeserialized_Implementation() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -138,7 +141,8 @@ private:
 
 	UFUNCTION()
 	void OnRep_LastShotsInfo();
-	
+
+	UPROPERTY(SaveGame)
 	int32 Ammo = 0;
 
 	APawn* GetOwningPawn() const;

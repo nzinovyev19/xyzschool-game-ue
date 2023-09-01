@@ -372,6 +372,11 @@ const TArray<AEquipableItem*>& UCharacterEquipmentComponent::GetItems() const
 	return ItemsArray;
 }
 
+void UCharacterEquipmentComponent::OnLevelDeserialized_Implementation()
+{
+	EquipItemInSlot(CurrentEquippedSlot);
+}
+
 void UCharacterEquipmentComponent::CreateEquipmentWidgets(APlayerController* PlayerController)
 {
 	checkf(IsValid(ViewWidgetClass), TEXT("UCharacterEquipmentComponent::CreateViewWidget view widget class is not defined"));

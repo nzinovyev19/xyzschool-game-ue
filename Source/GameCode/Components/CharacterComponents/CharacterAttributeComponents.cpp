@@ -56,6 +56,11 @@ void UCharacterAttributeComponents::RestoreStamina()
 	Stamina = MaxStamina;
 }
 
+void UCharacterAttributeComponents::OnLevelDeserialized_Implementation()
+{
+	OnHealthChanged();
+}
+
 void UCharacterAttributeComponents::BeginPlay()
 {
 	Super::BeginPlay();
