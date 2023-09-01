@@ -68,6 +68,12 @@ void ADoor::RemoveOnInteractionDelegate(FDelegateHandle DelegateHandle)
 	OnInteractionEvent.Remove(DelegateHandle);
 }
 
+void ADoor::OnLevelDeserialized_Implementation()
+{
+	float YawAngle = bIsOpened ? AngleOpened : AngleClosed;
+	DoorPivot->SetRelativeRotation(FRotator(0.0f, YawAngle, 0.0f));
+}
+
 void ADoor::InteractWithDoor()
 {
 	SetActorTickEnabled(true);
