@@ -354,6 +354,11 @@ void USaveSubsystem::DeserializeGame()
 {
 	UE_LOG(LogSaveSubsystem, Display, TEXT("USaveSubsystem::DeserializeGame(): %s"), *GetNameSafe(this));
 
+	if (!GameSaveData.bIsSerialized)
+	{
+		return;
+	}
+
 	UGameInstance* GameInstance = GetGameInstance();
 	FMemoryReader MemoryReader(GameSaveData.GameInstance.RawData, true);
 	FSaveSubsystemArchive Archive(MemoryReader, false);

@@ -102,4 +102,5 @@ public:
 	FObjectSaveData GameInstance;
 	FTransform StartTransform;
 
+	bool bIsSerialized;
 };
