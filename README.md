@@ -34,7 +34,11 @@ Implement third person shooter with realizing in parallel the such mechanics as:
   - [x] Base replication with platforms
   - [x] Replication of character props
   - [x] Online-sessions
-- [ ] Interaction with objects and inventory
+- [x] Interaction with objects and inventory
+  - [x] Interface of interactive objects
+  - [x] Inventory
+  - [x] Equipping items from inventory
+  - [x] Mouse wheel for switching between items
 - [ ] Save system, loading and streaming levels
 - [ ] Optimizations in UE4
 - [ ] Gameplay ability system
