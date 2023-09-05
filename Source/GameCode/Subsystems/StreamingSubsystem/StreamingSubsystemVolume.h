@@ -1,10 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "StreamingSubsystemVolume.generated.h"
+
+class UBoxComponent;
+class UStreamingSubsystem;
+class ACharacter;
 
 UCLASS()
 class GAMECODE_API AStreamingSubsystemVolume : public AActor
@@ -12,15 +14,36 @@ class GAMECODE_API AStreamingSubsystemVolume : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AStreamingSubsystemVolume();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	const TSet<FString>& GetLevelsToLoad() const;
+	const TSet<FString>& GetLevelsToUnLoad() const;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	void HandleCharacterOverlapBegin(ACharacter* Character);
+
+protected:
+	
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
+	UBoxComponent* CollisionComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Streaming")
+	TSet<FString> LevelsToLoad;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Streaming")
+	TSet<FString> LevelToUnLoad;
+
+private:
+	TWeakObjectPtr<UStreamingSubsystem> StreamingSubsystem;
+	TWeakObjectPtr<ACharacter> OverlappedCharacter;
 
 };
