@@ -7,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h" 
 #include "Camera/CameraComponent.h"
 #include "GameCode/Actors/Equipment/Weapons/RangeWeaponItem.h"
+#include "GameCode/Subsystems/StreamingSubsystem/StreamingSubsystemUtils.h"
 
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer)
@@ -157,6 +158,8 @@ void APlayerCharacter::OnJumped_Implementation()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	UStreamingSubsystemUtils::CheckCharacterOverlapStreamingSubsystemVolume(this);
+	
 	if (IsValid(AimingTimelineCurve))
 	{
 		FOnTimelineFloatStatic AimingFOVTimelineUpdate;

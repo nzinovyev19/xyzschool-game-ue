@@ -4,6 +4,7 @@
 #include "StreamingSubsystemVolume.h"
 
 #include "StreamingSubsystem.h"
+#include "StreamingSubsystemManager.h"
 #include "StreamingSubsystemUtils.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
